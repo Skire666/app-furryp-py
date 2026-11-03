@@ -1,0 +1,28 @@
+unused-foqa [FUR001] [*]: Unused `foqa` directive (unused: `FUR102`)
+   --> __src__\main.py:101:26
+    |
+ 99 |     base = os.environ.get("LOCALAPPDATA", str(Path("~").expanduser()))
+100 |     path_browser = str(Path(base) / C_APP_NAME / "ms-playwright")
+101 |     return path_browser  # foqa:FUR102
+    |                          ^^^^^^^^^^^^^
+help: Remove unused `foqa` directive
+    |
+100 |     path_browser = str(Path(base) / C_APP_NAME / "ms-playwright")
+    -     return path_browser  # foqa:FUR102
+101 +     return path_browser
+    |
+
+function-too-long [FUR101]: Function `get_args_for_stealth` has too many lines of code (31 > 25)
+   --> __src__\services\browser_playwright_service.py:114:9
+    |
+112 |             self._wire_page_crash_listener(page)
+113 |
+114 |     def get_args_for_stealth(self) -> list[str]:
+    |         ^^^^^^^^^^^^^^^^^^^^
+115 |         # Resolve to absolute path — Chromium executable is not Python, so relative paths are unsafe.
+116 |         ext_path = str(Path(self._chromium_extensions_dir).resolve())
+    |
+help: Long functions are hard to read and test; consider splitting this one
+
+Found 2 errors.
+[*] 1 fixable with `--fix`.

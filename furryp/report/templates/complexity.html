@@ -1,0 +1,22 @@
+<details class="category" id="complexity" open>
+<summary><span class="rating rating-$rating_class">$rating</span><h2>Complexity</h2></summary>
+$status
+<h3>Measures</h3>
+<div class="scroll"><table>
+<thead><tr><th>Measure</th><th class="number">Mean</th><th class="number">Median</th><th class="number">Max</th><th class="number">Total</th></tr></thead>
+<tbody>
+<tr><td>Cognitive complexity per function, nested functions in their parent</td><td class="number">$cognitive_mean</td><td class="number">$cognitive_median</td><td class="number">$cognitive_max</td><td class="number">$cognitive_total</td></tr>
+<tr><td>Functions over a complexity of $cognitive_limit</td><td class="number" colspan="4">$functions_over</td></tr>
+</tbody>
+</table></div>
+$rules
+<h3>Worst files, by total cognitive complexity</h3>
+<p class="note">Files with a violation in this category, from the worst score to the best; on a tie, the longest file first.</p>
+<div class="scroll"><table>
+<thead><tr><th>File</th><th class="number">Total complexity</th><th class="number">Max complexity</th><th>Most complex function</th></tr></thead>
+<tbody>
+$rows
+</tbody>
+</table></div>
+$empty
+</details>

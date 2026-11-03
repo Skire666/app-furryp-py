@@ -1,0 +1,24 @@
+<details class="category" id="size" open>
+<summary><span class="rating rating-$rating_class">$rating</span><h2>Size</h2></summary>
+$status
+<h3>Measures</h3>
+<div class="scroll"><table>
+<thead><tr><th>Measure</th><th class="number">Mean</th><th class="number">Median</th><th class="number">Max</th><th class="number">Total</th></tr></thead>
+<tbody>
+<tr><td>Lines per file</td><td class="number">$lines_mean</td><td class="number">$lines_median</td><td class="number">$lines_max</td><td class="number">$lines_total</td></tr>
+<tr><td>Lines of code per file</td><td class="number">$code_lines_mean</td><td class="number">$code_lines_median</td><td class="number">$code_lines_max</td><td class="number">$code_lines_total</td></tr>
+<tr><td>Lines of code per function</td><td class="number">$function_lines_mean</td><td class="number">$function_lines_median</td><td class="number">$function_lines_max</td><td class="number">$function_lines_total</td></tr>
+<tr><td>Functions over $function_limit lines of code</td><td class="number" colspan="4">$functions_over</td></tr>
+</tbody>
+</table></div>
+$rules
+<h3>Worst files, by lines of code</h3>
+<p class="note">Files with a violation in this category, from the worst score to the best; on a tie, the longest file first.</p>
+<div class="scroll"><table>
+<thead><tr><th>File</th><th class="number">Lines</th><th class="number">Lines of code</th><th class="number">Functions</th><th>Longest function</th></tr></thead>
+<tbody>
+$rows
+</tbody>
+</table></div>
+$empty
+</details>

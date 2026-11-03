@@ -1,0 +1,25 @@
+<details class="category" id="halstead" open>
+<summary><span class="rating rating-$rating_class">$rating</span><h2>Halstead</h2></summary>
+$status
+<h3>Measures</h3>
+<div class="scroll"><table>
+<thead><tr><th>Measure</th><th class="number">Mean</th><th class="number">Median</th><th class="number">Max</th><th class="number">Total</th></tr></thead>
+<tbody>
+<tr><td>Volume per file</td><td class="number">$volume_mean</td><td class="number">$volume_median</td><td class="number">$volume_max</td><td class="number">–</td></tr>
+<tr><td>Difficulty per file</td><td class="number">$difficulty_mean</td><td class="number">$difficulty_median</td><td class="number">$difficulty_max</td><td class="number">–</td></tr>
+<tr><td>Effort per file</td><td class="number">$effort_mean</td><td class="number">$effort_median</td><td class="number">$effort_max</td><td class="number">–</td></tr>
+<tr><td>Estimated bugs per file</td><td class="number">$bugs_mean</td><td class="number">$bugs_median</td><td class="number">$bugs_max</td><td class="number">$bugs_total</td></tr>
+<tr><td>Volume per function</td><td class="number">$function_volume_mean</td><td class="number">$function_volume_median</td><td class="number">$function_volume_max</td><td class="number">–</td></tr>
+</tbody>
+</table></div>
+$rules
+<h3>Worst files, by $metric</h3>
+<p class="note">Files with a violation in this category, from the worst score to the best; on a tie, the longest file first.</p>
+<div class="scroll"><table>
+<thead><tr><th>File</th><th class="number">Volume</th><th class="number">Difficulty</th><th class="number">Effort</th><th class="number">Bugs</th></tr></thead>
+<tbody>
+$rows
+</tbody>
+</table></div>
+$empty
+</details>

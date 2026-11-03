@@ -1,0 +1,28 @@
+<details class="category" id="design" open>
+<summary><span class="rating rating-$rating_class">$rating</span><h2>Design</h2></summary>
+$status
+<h3>Measures</h3>
+<div class="scroll"><table>
+<thead><tr><th>Measure</th><th class="number">Mean</th><th class="number">Median</th><th class="number">Max</th><th class="number">Total</th></tr></thead>
+<tbody>
+<tr><td>Classes</td><td class="number" colspan="4">$classes</td></tr>
+<tr><td>Class complexity</td><td class="number">$complexity_mean</td><td class="number">$complexity_median</td><td class="number">$complexity_max</td><td class="number">–</td></tr>
+<tr><td>Instance attributes per class</td><td class="number">$attributes_mean</td><td class="number">$attributes_median</td><td class="number">$attributes_max</td><td class="number">–</td></tr>
+<tr><td>Classes over a complexity of $complexity_limit</td><td class="number" colspan="4">$complexity_over</td></tr>
+<tr><td>Classes over $attributes_limit instance attributes</td><td class="number" colspan="4">$attributes_over</td></tr>
+<tr><td>Contract violations</td><td class="number" colspan="4">$contracts</td></tr>
+<tr><td>Attribute chains too deep</td><td class="number" colspan="4">$chains</td></tr>
+</tbody>
+</table></div>
+<p class="note">Class complexity leaves out test and dispatch classes; instance attributes leave out test and data classes, as the rules do.</p>
+$rules
+<h3>Worst files, by number of violations</h3>
+<p class="note">Files with a violation in this category, from the worst score to the best; on a tie, the longest file first.</p>
+<div class="scroll"><table>
+<thead><tr><th>File</th><th class="number">Violations</th><th class="number">Max class complexity</th><th class="number">Max attributes</th><th class="number">Contracts</th><th class="number">Chains</th></tr></thead>
+<tbody>
+$rows
+</tbody>
+</table></div>
+$empty
+</details>

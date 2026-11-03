@@ -1,0 +1,26 @@
+[project]
+name = "furryp"
+version = "1.0.1"
+description = "A local, dependency-free Python linter inspired by ruff."
+readme = "README.md"
+requires-python = ">=3.14"
+license = "Unlicense"
+license-files = ["LICENSE"]
+authors = [{ name = "skire666" }]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Software Development :: Quality Assurance",
+]
+
+[project.scripts]
+furryp = "furryp.cli.app:main"
+
+[build-system]
+requires = ["uv_build>=0.12.23,<0.13"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-root = ""

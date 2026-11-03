@@ -1,0 +1,25 @@
+{
+  "rules": {
+    "layer-violation": {
+      "source-roots": ["tests/fixtures/layer-violation"],
+      "contracts": [
+        {
+          "type": "forbidden",
+          "name": "no-infra",
+          "source": ["ko_forbidden", "ok_allowed"],
+          "forbidden": ["app.infra"]
+        },
+        {
+          "type": "layers",
+          "name": "layers",
+          "layers": ["app.api", ["ko_layers", "ok_allowed"], "app.domain"]
+        },
+        {
+          "type": "independence",
+          "name": "apart",
+          "modules": ["ko_independence", "app.shipping"]
+        }
+      ]
+    }
+  }
+}

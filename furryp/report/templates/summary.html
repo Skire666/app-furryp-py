@@ -1,0 +1,25 @@
+<section id="summary">
+<h2>Summary</h2>
+<dl class="cards">
+<div class="card"><dt>Files analyzed</dt><dd>$files</dd></div>
+<div class="card"><dt>Files in error</dt><dd>$files_in_error</dd></div>
+<div class="card"><dt>Lines</dt><dd>$lines</dd></div>
+<div class="card"><dt>Lines of code</dt><dd>$code_lines</dd></div>
+<div class="card"><dt>Functions</dt><dd>$functions</dd></div>
+<div class="card"><dt>Classes</dt><dd>$classes</dd></div>
+<div class="card"><dt>Violations</dt><dd>$violations</dd></div>
+<div class="card"><dt>Violations per 1000 lines of code</dt><dd>$density</dd></div>
+<div class="card"><dt>Suppressed by foqa</dt><dd>$suppressed</dd></div>
+<div class="card"><dt>Unused foqa directives</dt><dd>$unused_foqa</dd></div>
+<div class="card"><dt>Available fixes</dt><dd>$fixable</dd></div>
+</dl>
+<h3>Ratings</h3>
+<div class="ratings">
+<a class="card rating-card" href="#size"><span class="rating rating-$size_class">$size_rating</span><span class="rating-name">Size</span><span class="rating-share">$size_share</span></a>
+<a class="card rating-card" href="#complexity"><span class="rating rating-$complexity_class">$complexity_rating</span><span class="rating-name">Complexity</span><span class="rating-share">$complexity_share</span></a>
+<a class="card rating-card" href="#halstead"><span class="rating rating-$halstead_class">$halstead_rating</span><span class="rating-name">Halstead</span><span class="rating-share">$halstead_share</span></a>
+<a class="card rating-card" href="#design"><span class="rating rating-$design_class">$design_rating</span><span class="rating-name">Design</span><span class="rating-share">$design_share</span></a>
+</div>
+<p class="note">The share is the part of the analyzed files with at least one violation in the category.</p>
+$rating_notes
+</section>

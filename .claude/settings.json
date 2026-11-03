@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(uv sync)",
+      "Bash(uv lock)",
+      "Bash(uv --version)",
+      "Bash(uv run python -m unittest:*)",
+      "Bash(uv run furrype:*)",
+      "Bash(uv run python -m furrype:*)",
+      "Bash(uvx ruff:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)"
+    ],
+    "ask": [
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
+    ],
+    "deny": [
+      "Bash(uv add:*)",
+      "Bash(uv pip:*)",
+      "Bash(pip install:*)",
+      "Bash(uv init:*)"
+    ]
+  }
+}

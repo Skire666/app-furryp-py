@@ -1,0 +1,1 @@
+{"rules": {"too-many-instance-attributes": {"max-instance-attributes": 3}}}

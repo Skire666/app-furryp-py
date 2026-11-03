@@ -1,0 +1,11 @@
+# uv / Python
+.venv/
+__pycache__/
+*.py[cod]
+dist/
+build/
+*.egg-info/
+
+# rapports furryp générés
+*-report.html
+audit.html
