@@ -418,7 +418,7 @@ class LayersTest(unittest.TestCase):
 
 
 class SpecificityTest(unittest.TestCase):
-    """A48: the level of a module is that of its most specific pattern."""
+    """The level of a module is that of its most specific pattern."""
 
     def test_more_segments_win_in_either_order(self) -> None:
         for layers in (["app", "app.model"], ["app.model", "app"]):

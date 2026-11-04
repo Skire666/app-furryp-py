@@ -19,7 +19,7 @@ Aucun hook ni CI ne lance ces commandes à votre place. Si l'une échoue, corrig
 
 ## Conventions
 
-- [docs/SPEC.md](docs/SPEC.md) fait foi. Si elle est ambiguë ou diverge de ruff, le comportement réel de ruff prime, et tout écart voulu se trace dans sa section 15.
+- [docs/SPEC.md](docs/SPEC.md) fait foi. Si elle est ambiguë ou diverge de ruff, le comportement réel de ruff prime.
 - [AGENTS.md](AGENTS.md) détaille les règles de code : couches, limites de taille, encodages explicites, tests en `unittest`, texte visible par l'utilisateur en anglais.
 - Une règle n'est terminée qu'avec son aide (`help`, SPEC §11.0) et sa fiche `furryp/rules/docs/<code>.md` (SPEC §4.6).
 

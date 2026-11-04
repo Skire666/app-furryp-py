@@ -188,7 +188,7 @@ def _complexity_row(file: FileSummary) -> Row:
 
 
 def _complexity(scope: _Scope) -> _Content:
-    """Cognitive complexity per function that is not nested (A13)."""
+    """Cognitive complexity per function that is not nested."""
     options = options_of(scope.rules, COGNITIVE_COMPLEXITY.name, CognitiveComplexityOptions)
     values = [item.cognitive for file in scope.files for item in file.outer_functions]
     aggregates = {

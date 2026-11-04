@@ -153,7 +153,6 @@ class PackageTest(unittest.TestCase):
 
 class ProjectFilesTest(unittest.TestCase):
     def test_python_version_and_no_optional_dependency(self) -> None:
-        # The other dependencies: tests/test_version.py.
         with (REPO_ROOT / PYPROJECT).open("rb") as file:
             data = tomllib.load(file)
         self.assertEqual(data["project"]["requires-python"], ">=3.14")

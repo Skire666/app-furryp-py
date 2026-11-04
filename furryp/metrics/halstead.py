@@ -1,4 +1,4 @@
-"""Halstead metrics, counted on tokens rather than on the AST (SPEC FUR201, A09).
+"""Halstead metrics, counted on tokens rather than on the AST (SPEC FUR201).
 
 A pair of delimiters counts once, at its opening. ``tokenize`` gives an empty
 ``FSTRING_MIDDLE`` after a nested format spec (``f"{x:>{w}}"``): it holds no

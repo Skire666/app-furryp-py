@@ -62,7 +62,7 @@ class FileSummary:
 
     @property
     def outer_functions(self) -> tuple[FunctionMetrics, ...]:
-        """The functions evaluated alone by FUR203: not the nested ones (A13)."""
+        """The functions evaluated alone by FUR203: not the nested ones."""
         return tuple(item for item in self.functions if not item.nested)
 
 

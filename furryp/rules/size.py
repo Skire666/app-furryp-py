@@ -27,7 +27,7 @@ class FunctionTooLongOptions:
 def check_function_too_long(context: RuleContext[FunctionTooLongOptions, FileMetrics]) -> Iterator[Diagnostic]:
     """Report a function with more lines of code than ``max-lines``.
 
-    Nested functions count in their parent and are also evaluated alone (A13).
+    Nested functions count in their parent and are also evaluated alone.
     """
     limit = context.options.max_lines
     for function in context.metrics.functions:

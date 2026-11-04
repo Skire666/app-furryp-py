@@ -26,7 +26,7 @@ uv add --dev <chemin-vers-furryp>
 uv run --project <chemin-vers-furryp> furryp check
 ```
 
-Sans uv : `python -m pip install <chemin-vers-furryp>` (sous Windows, `py -3.14 -m pip install …` si plusieurs versions de Python coexistent).
+Sans uv : `python -m pip install <chemin-vers-furryp>` (sous Windows, `py -3.14 -m pip install ...` si plusieurs versions de Python coexistent).
 
 Vérification :
 
@@ -154,7 +154,7 @@ La sortie de `--show-settings` contient toutes les clés avec leurs valeurs. Pou
 }
 ```
 
-- **Fichiers** : `include` (défaut `**/*.py`), `exclude` (dossiers usuels : `.venv`, `build`, `__pycache__`…), `extend-exclude` pour ajouter sans remplacer. Un motif sans `/` vise un nom de dossier ou de fichier à n'importe quel niveau ; un motif avec `/` vise un chemin relatif à la racine (`**` accepté). Les exclusions s'appliquent même aux fichiers passés explicitement.
+- **Fichiers** : `include` (défaut `**/*.py`), `exclude` (dossiers usuels : `.venv`, `build`, `__pycache__`, ...), `extend-exclude` pour ajouter sans remplacer. Un motif sans `/` vise un nom de dossier ou de fichier à n'importe quel niveau ; un motif avec `/` vise un chemin relatif à la racine (`**` accepté). Les exclusions s'appliquent même aux fichiers passés explicitement.
 - **Règles actives** : `select` (défaut `["FUR"]`, tout), `extend-select`, `ignore`. On peut viser une famille par préfixe : `FUR2` = complexité, `FUR4` = conception. `ignore` l'emporte toujours.
 - **Réglages par règle** : sous `rules`, par nom de règle. Une clé inconnue ou une valeur invalide arrête furryp (code 2) avec une suggestion (`did you mean "max-lines"?`). `furryp rule <code>` liste les options d'une règle.
 - **Contrats de couches** : trois types. `forbidden` (A n'importe jamais B), `layers` (du plus haut au plus bas : on n'importe jamais vers le haut) et `independence` (des modules frères qui ne s'importent pas entre eux).
@@ -187,7 +187,7 @@ Le premier lancement sur un projet existant produit souvent beaucoup de violatio
 
 1. **Mesurer** : `furryp check --statistics`.
 2. **Choisir ses règles** : ajustez `select`, `ignore` et les seuils dans `furryp.json`.
-3. **Geler la dette** : `furryp check --add-foqa` ajoute un `# foqa:CODE` sur chaque violation restante (ou une ligne `# furryp: foqa:…` en tête de fichier pour les règles de niveau fichier). Lancez ensuite `ruff format` : si une ligne est devenue trop longue, ruff la replie et la directive reste valide. Si le projet n'est pas encore formaté, lancez `ruff format` avant `--add-foqa`, et une seconde fois après. Committez ce changement à part. Désormais, seules les **nouvelles** violations apparaissent.
+3. **Geler la dette** : `furryp check --add-foqa` ajoute un `# foqa:CODE` sur chaque violation restante (ou une ligne `# furryp: foqa:...` en tête de fichier pour les règles de niveau fichier). Lancez ensuite `ruff format` : si une ligne est devenue trop longue, ruff la replie et la directive reste valide. Si le projet n'est pas encore formaté, lancez `ruff format` avant `--add-foqa`, et une seconde fois après. Committez ce changement à part. Désormais, seules les **nouvelles** violations apparaissent.
 4. **Suivre** : `furryp check --report-html audit.html` à intervalles réguliers. La colonne « Suppressed » montre la dette gelée qui reste à résorber.
 5. **Résorber** : corrigez au fil des modifications. Dès qu'une violation gelée disparaît, `unused-foqa` le signale, et `furryp check --fix` retire la directive.
 
@@ -215,7 +215,7 @@ Note de catégorie : la part de fichiers ayant au moins une violation dans la ca
 furryp s'utilise tel quel en CI, comme ruff : `0` si rien n'est à signaler, `1` sinon, `2` en cas d'erreur. La sortie est sans couleur, déterministe et toujours en UTF-8, quelle que soit la plateforme.
 
 ```bash
-uv tool install <chemin-ou-dépôt-de-furryp>                   # ou : python -m pip install …
+uv tool install <chemin-ou-dépôt-de-furryp>                   # ou : python -m pip install ...
 furryp check                                                  # échoue (code 1) s'il reste une violation
 furryp check --report-html furryp-report.html --exit-zero    # rapport à publier comme artefact, sans faire échouer
 ```
@@ -256,11 +256,11 @@ furryp est conçu pour tourner **à côté** de ruff, et **ruff a toujours la pr
 
 La sortie est conçue pour être lue telle quelle par un humain comme par un LLM : positions exactes, valeur mesurée et seuil dans le message des règles de mesure, `help:` qui résume le problème, code de règle visible, ordre stable d'une exécution à l'autre.
 
-Consignes à copier dans le fichier d'instructions de votre agent (`CLAUDE.md`, `AGENTS.md`…) :
+Consignes à copier dans le fichier d'instructions de votre agent (`CLAUDE.md`, `AGENTS.md`, ...) :
 
 ```markdown
 ## furryp
-- Commencer par `furryp check --statistics`, puis traiter une famille à la fois (`--select FUR1`, `--select FUR4`…).
+- Commencer par `furryp check --statistics`, puis traiter une famille à la fois (`--select FUR1`, `--select FUR4`, ...).
 - Avant de corriger une règle pour la première fois, lire sa fiche : `furryp rule <CODE>`.
 - Lire la ligne `help:` : elle résume le problème sans imposer de solution. Regarder la fonction ou la classe dans son ensemble avant de corriger.
 - Lancer `furryp check --diff` avant `furryp check --fix`.
@@ -275,17 +275,17 @@ Consignes à copier dans le fichier d'instructions de votre agent (`CLAUDE.md`, 
 |---|---|
 | `error: furryp.json: rules.function-too-long.max_lines: unknown key` | Faute de frappe : les clés s'écrivent avec des tirets (`max-lines`). Le message propose la bonne clé. |
 | `unused-foqa [FUR001]` après un refactoring | La violation gelée a disparu : `furryp check --fix` retire la directive. |
-| `unused-foqa [FUR001]` … `(non-enabled: …)` | La directive cite une règle désactivée pour ce fichier (`select`, `ignore`, `per-file-ignores`, options `--select` / `--ignore`). Comme ruff, FUR001 la signale : réactivez la règle ou retirez le code. |
+| `unused-foqa [FUR001]` ... `(non-enabled: ...)` | La directive cite une règle désactivée pour ce fichier (`select`, `ignore`, `per-file-ignores`, options `--select` / `--ignore`). Comme ruff, FUR001 la signale : réactivez la règle ou retirez le code. |
 | Un `# foqa` semble sans effet | Code mal saisi : comme ruff, un code inconnu est ignoré sans avertissement. `furryp rule --all` liste les codes valides. Autre cause : une forme invalide (`# foqa.`, `# foqa:FUR101;`) annule la directive, ou une directive plus tôt dans le commentaire la masque ; un avertissement le signale sur stderr, sauf si cette première directive est valide. |
 | `invalid-syntax [FUR000]` sur un fichier | Le fichier ne se parse pas en Python 3.14 : les autres règles ne s'appliquent pas à ce fichier, seule la longueur est vérifiée. |
 | Un fichier attendu n'est pas analysé | Il est exclu (`exclude`, `extend-exclude`), même s'il est passé explicitement en argument. `--show-settings` montre la configuration effective. |
 | Caractères illisibles dans une console Windows | furryp écrit toujours en UTF-8 (y compris redirigé vers un fichier ou un journal de CI). Utilisez le terminal de VS Code ou Windows Terminal, qui affichent l'UTF-8. |
 | `invalid-syntax [FUR000]: Failed to read file` | Le chemin passé en argument n'existe pas ou n'est pas lisible. |
-| `invalid-syntax [FUR000]: Failed to decode file` | Le fichier n'est pas en UTF-8 et ne déclare pas son encodage : enregistrez-le en UTF-8, ou ajoutez une ligne `# -*- coding: … -*-`. |
+| `invalid-syntax [FUR000]: Failed to decode file` | Le fichier n'est pas en UTF-8 et ne déclare pas son encodage : enregistrez-le en UTF-8, ou ajoutez une ligne `# -*- coding: ... -*-`. |
 | Les fins de ligne ont changé après `--fix` | Ne devrait jamais arriver : furryp réécrit en binaire et ne touche qu'aux lignes corrigées. Si c'est le cas, c'est un bug à signaler. |
 | Le rapport n'affiche rien dans le terminal | C'est voulu : `--report-html` n'écrit que le fichier. Le code de sortie indique toujours s'il y a des violations. |
 
-Pour aller plus loin : `furryp rule --all` pour les fiches de toutes les règles, et `SPEC.md` pour la spécification complète.
+Pour aller plus loin : `furryp rule --all` pour les fiches de toutes les règles, et `docs/SPEC.md` pour la spécification complète.
 
 ---
 

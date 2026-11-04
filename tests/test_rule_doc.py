@@ -39,7 +39,7 @@ CODE_BLOCK = re.compile(
     r"^```(?P<language>\w+)\n(?P<code>.*?)^```$", re.MULTILINE | re.DOTALL
 )
 
-# The table of SPEC §11.0, with its categories in English (A19).
+# The table of SPEC §11.0, with its categories in English.
 CATALOGUE = {
     "FUR000": ("invalid-syntax", "errors", Scope.FILE, False),
     "FUR001": ("unused-foqa", "suppressions", Scope.LINE, True),

@@ -237,7 +237,7 @@ class AggregatesTest(unittest.TestCase):
         self.assertEqual(aggregates["function_limit"], 26)
 
     def test_a_nested_function_counts_alone_for_size_and_halstead(self) -> None:
-        """A13: evaluated alone by FUR101 and FUR202, in its parent for FUR203."""
+        """Evaluated alone by FUR101 and FUR202, in its parent for FUR203."""
         measures = Halstead(10, 10, 100, 100)
         file = summary(
             functions=[
@@ -335,7 +335,7 @@ class AggregatesTest(unittest.TestCase):
         )
 
     def test_size_row_counts_nested_functions(self) -> None:
-        """A13: a nested function counts alone, and it can be the longest."""
+        """A nested function counts alone, and it can be the longest."""
         file = summary(
             functions=[
                 function("outer", code_lines=30),

@@ -8,7 +8,7 @@ license = "Unlicense"
 license-files = ["LICENSE"]
 authors = [{ name = "skire666" }]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 5 - Production/Stable",
     "Environment :: Console",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.14",
@@ -29,6 +29,10 @@ module-root = ""
 
 # Set on purpose: the line counts of function-too-long and file-too-long depend on it.
 line-length = 120
+
+# ruff only looks at furryp/: the other folders are ignored.
+# pyproject.toml stays linted by ruff check; ruff format skips it.
+include = ["furryp/**/*.py", "furryp/**/*.md", "pyproject.toml"]
 
 # Deliberately faulty samples used by the tests.
 extend-exclude = ["tests/**"]
@@ -140,3 +144,8 @@ max-locals = 12  # default: 15
 
 # Maximum number of nested blocks
 max-nested-blocks = 4  # default: 5
+
+[dependency-groups]
+dev = [
+    "ruff>=0.17.3",
+]

@@ -1,4 +1,4 @@
-"""Cognitive complexity and the rule FUR203 (SPEC §11, A12, A13)."""
+"""Cognitive complexity and the rule FUR203 (SPEC §11)."""
 
 import unittest
 

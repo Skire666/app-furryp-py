@@ -1,4 +1,4 @@
-"""Halstead metrics and the rules FUR201 and FUR202 (SPEC §11, A09, A13)."""
+"""Halstead metrics and the rules FUR201 and FUR202 (SPEC §11)."""
 
 import unittest
 

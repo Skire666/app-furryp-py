@@ -5,7 +5,7 @@ the messages cite the concrete modules, a ``*`` being replaced by what it
 matched: ``app.billing`` must not import ``app.shipping``.
 
 For ``forbidden``, the first pattern written that matches a target is cited, an
-order that TID251 of ruff 0.17.3 does not follow (SPEC A59). For ``layers``, the pattern decides the level of the
+order that TID251 of ruff 0.17.3 does not follow. For ``layers``, the pattern decides the level of the
 module, not only what is cited: the most specific pattern wins, so that
 ``["app", "app.core"]`` does keep ``app.core`` below the rest of ``app``.
 

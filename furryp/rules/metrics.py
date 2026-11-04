@@ -82,7 +82,7 @@ HALSTEAD_FILE = Rule(
 def check_halstead_function(context: RuleContext[HalsteadFunctionOptions, FileMetrics]) -> Iterator[Diagnostic]:
     """Report a function whose Halstead metric is above ``max``.
 
-    Nested functions count in their parent and are also evaluated alone (A13).
+    Nested functions count in their parent and are also evaluated alone.
     """
     options = context.options
     for function in context.metrics.functions:
@@ -115,7 +115,7 @@ HALSTEAD_FUNCTION = Rule(
 def check_cognitive_complexity(context: RuleContext[CognitiveComplexityOptions, FileMetrics]) -> Iterator[Diagnostic]:
     """Report a function whose cognitive complexity is above ``max``.
 
-    A nested function counts in its parent and is not evaluated alone (A13).
+    A nested function counts in its parent and is not evaluated alone.
     """
     limit = context.options.max
     for function in context.metrics.functions:

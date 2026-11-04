@@ -16,18 +16,18 @@ uv run python -m unittest discover -s tests -t .
 uv tool install --editable ./
 
 # dans le dossier du projet à analyser, spécifier le dossier
-clear ; furryp check __src__
+clear ; furryp check _src_
 
-# aperçu : liste ce qui serait supprimé, sans rien toucher
+# temporaire : liste ce qui serait supprimé, sans rien toucher
 git clean -ndX
 
-# supprime vraiment
+# temporaire : supprime vraiment
 git clean -fdX
 ```
 
 ## Aide-mémoire
 
-| Je veux… | Commande |
+| Je veux... | Commande |
 |---|---|
 | Compter les violations, par règle | `furryp check --statistics` |
 | Voir le détail | `furryp check` |
@@ -44,12 +44,12 @@ git clean -fdX
 
 Il faut **Python 3.14** ou plus récent, et de préférence [uv](https://docs.astral.sh/uv/).
 
-| Méthode | Commande | À choisir si… |
+| Méthode | Commande | À choisir si... |
 |---|---|---|
 | Outil global (recommandé) | `uv tool install --editable <chemin-vers-furryp>` | Vous voulez la commande `furryp` partout. Elle suit les modifications du dépôt de furryp. |
 | Sans rien installer | `uv run --project <chemin-vers-furryp> furryp check` | Vous voulez essayer une fois. Lancez-la depuis le projet à analyser. |
 | Dépendance d'un projet | `uv add --dev <chemin-vers-furryp>`, puis `uv run furryp check` | Toute l'équipe du projet doit avoir la même version. |
-| Sans uv | `python -m pip install <chemin-vers-furryp>` | uv n'est pas disponible. Sous Windows, `py -3.14 -m pip install …` si plusieurs Python coexistent. |
+| Sans uv | `python -m pip install <chemin-vers-furryp>` | uv n'est pas disponible. Sous Windows, `py -3.14 -m pip install ...` si plusieurs Python coexistent. |
 
 Les deux dernières méthodes installent une copie figée : réinstallez pour obtenir une nouvelle version de furryp.
 
@@ -75,7 +75,7 @@ furryp check
 furryp rule FUR202
 ```
 
-Sans argument, furryp analyse tous les fichiers `*.py` du dossier courant, récursivement, sauf les dossiers usuels (`.venv`, `venv`, `build`, `dist`, `__pycache__`…). Pour une liste de chemins, passez-les en arguments : `furryp check src/ tests/test_x.py`.
+Sans argument, furryp analyse tous les fichiers `*.py` du dossier courant, récursivement, sauf les dossiers usuels (`.venv`, `venv`, `build`, `dist`, `__pycache__`, ...). Pour une liste de chemins, passez-les en arguments : `furryp check src/ tests/test_x.py`.
 
 Seuls `--fix` et `--add-foqa` modifient vos fichiers source. `--report-html` écrit seulement le rapport.
 
@@ -216,7 +216,7 @@ Créez **`furryp.json` à côté du `pyproject.toml`** de votre projet. furryp r
 | Clé | Défaut | Rôle |
 |---|---|---|
 | `include` | `["**/*.py"]` | Fichiers à analyser. |
-| `exclude` | dossiers usuels (`.git`, `.venv`, `venv`, `env`, `__pycache__`, `build`, `dist`, `node_modules`, caches…) | Le remplacer retire aussi ces valeurs. |
+| `exclude` | dossiers usuels (`.git`, `.venv`, `venv`, `env`, `__pycache__`, `build`, `dist`, `node_modules`, caches, ...) | Le remplacer retire aussi ces valeurs. |
 | `extend-exclude` | `[]` | Ajoute à `exclude`, sans le remplacer. C'est ce qu'il faut en général. |
 | `select` | `["FUR"]` | Règles actives : codes, préfixes ou noms. `FUR` = toutes. |
 | `extend-select` | `[]` | Ajoute à la sélection. |
@@ -487,11 +487,11 @@ Pour travailler avec un assistant de code, des consignes à copier se trouvent d
 | Beaucoup plus de violations que prévu, ou des règles inconnues de ce guide | Ancienne version en cache : n'utilisez pas `uvx --from` (section 1). Vérifiez avec `furryp rule --all`. |
 | Un `# foqa` semble sans effet | Code mal saisi, forme invalide, ou directive plus tôt dans le commentaire. Une forme invalide donne un avertissement sur stderr ; un code inconnu, non. |
 | `unused-foqa [FUR001]` après un refactoring | La violation gelée a disparu : `furryp check --fix`. |
-| `unused-foqa [FUR001]` … `(non-enabled: …)` | La directive cite une règle désactivée pour ce fichier. Réactivez la règle ou retirez le code. |
+| `unused-foqa [FUR001]` ... `(non-enabled: ...)` | La directive cite une règle désactivée pour ce fichier. Réactivez la règle ou retirez le code. |
 | `layer-violation` ne signale rien | Sans contrat, la règle ne fait rien. Sinon, vérifiez `source-roots` : les noms de modules doivent être ceux de vos imports. |
 | `invalid-syntax [FUR000]` sur un fichier | Il ne se parse pas en Python 3.14 : seule la longueur y est vérifiée. |
 | `Failed to read file` | Le chemin n'existe pas ou n'est pas lisible. |
-| `Failed to decode file` | Enregistrez le fichier en UTF-8, ou ajoutez une ligne `# -*- coding: … -*-`. |
+| `Failed to decode file` | Enregistrez le fichier en UTF-8, ou ajoutez une ligne `# -*- coding: ... -*-`. |
 | `warning: No Python files found` ou un fichier attendu n'est pas analysé | Il est exclu par `include`, `exclude` ou `extend-exclude`, même passé en argument. `furryp check --show-settings` montre la configuration effective. |
 | Une configuration inattendue s'applique | Vous n'êtes pas à la racine du bon projet. La première ligne de `--show-settings` indique la racine, la deuxième le fichier lu. |
 | Caractères illisibles dans une console Windows | furryp écrit toujours en UTF-8. Utilisez le terminal de VS Code ou Windows Terminal. |

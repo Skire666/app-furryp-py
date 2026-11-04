@@ -1,19 +1,18 @@
 # furryp — instructions permanentes pour Claude Code
 
 Linter Python local inspiré de ruff. Python 3.14, bibliothèque standard uniquement.
-La spécification normative est `SPEC.md` : lis les sections citées par le prompt de phase (inutile de tout relire à chaque fois).
+La spécification normative est `docs/SPEC.md` : lis les sections utiles à la tâche (inutile de tout relire à chaque fois).
 
 ## Règles d'or
 
-- `SPEC.md` fait foi. En cas d'ambiguïté, ou si elle diverge de ruff : **vérifie d'abord le comportement réel de ruff** (`uv run ruff`, version notée), qui a la priorité (A39) ; si ruff n'a pas d'équivalent, **pose la question** au lieu d'inventer.
+- `docs/SPEC.md` fait foi. En cas d'ambiguïté, ou si elle diverge de ruff : **vérifie d'abord le comportement réel de ruff** (`uv run ruff`, version notée), qui a la priorité, sauf pour les écarts assumés du §2.3 ; si ruff n'a pas d'équivalent, **pose la question** au lieu d'inventer.
 - **Le but reste une bonne qualimétrie** : aligné sur ruff, furryp doit rester productif. Avant de retenir un choix, mesure son effet réel (par exemple sur la bibliothèque standard) ; si un choix, même validé ou venant de ruff, nuit à la qualité des mesures, signale-le chiffres à l'appui au lieu de l'appliquer sans rien dire.
-- Trace toujours l'arbitrage et l'écart, y compris un écart avec ruff que j'ai décidé : tout écart volontaire dans sa section « Écarts », le signalement dans ton résumé, et une proposition de report dans `SPEC.md` (§15).
-- **Une phase à la fois** : n'implémente rien qui relève d'une phase ultérieure (`SPEC.md` §14).
+- Trace toujours l'arbitrage et l'écart, y compris un écart avec ruff que j'ai décidé : le signalement dans ton résumé, et une proposition de report dans `docs/SPEC.md` (la section concernée, et le §2.3 pour un écart avec ruff).
 - **Aucune dépendance tierce**, ni à l'exécution ni pour les tests (`unittest` uniquement). N'installe rien.
-- Ne modifie jamais `SPEC.md`, `AGENTS.md`, `CLAUDE.md`, `PROMPTS.md` ni `README.md` (guide utilisateur, décrit le comportement attendu) sans demande explicite.
+- Ne modifie jamais `docs/SPEC.md`, `AGENTS.md`, `CLAUDE.md` ni `README.md` (guide utilisateur, décrit le comportement attendu) sans demande explicite.
 - Pour faire passer le dogfooding, ne relâche **jamais** un seuil et n'ajoute **jamais** de `# foqa` ni de `per-file-ignores` sans mon accord explicite : corrige le code.
 
-## Conventions de code (dès la phase 1, avant même que les règles existent)
+## Conventions de code
 
 Chaque module de `furryp/` respecte les règles qu'il implémente :
 
@@ -31,18 +30,18 @@ Chaque module de `furryp/` respecte les règles qu'il implémente :
 12. Annotations de type complètes. Docstrings et tout texte visible par l'utilisateur en anglais : messages, aides, fiches `furryp rule`, rapport HTML.
 13. **Entrées/sorties** (SPEC §3.1) : jamais d'encodage implicite. `encoding=` explicite sur tout `open`, `read_text`, `write_text` (y compris `importlib.resources`), `newline=` explicite sur toute écriture en mode texte. Sources lues en octets + `tokenize.detect_encoding`, réécrites avec `write_bytes`. Ne compte jamais sur `PYTHONUTF8` : sous Windows, Python 3.14 lit en cp1252 par défaut.
 14. **Réécriture** (SPEC §7.1) : éditions textuelles ciblées uniquement. Jamais `ast.unparse`, `tokenize.untokenize` ni `libcst` pour produire du code.
-15. Chaque règle livrée a une aide (`help`) conforme au contrat du §11.0 de SPEC.md et sa fiche `furryp/rules/docs/<code>.md` (§4.6). Une règle sans aide conforme ni fiche n'est pas terminée.
+15. Chaque règle livrée a une aide (`help`) conforme au contrat du §11.0 de `docs/SPEC.md` et sa fiche `furryp/rules/docs/<code>.md` (§4.6). Une règle sans aide conforme ni fiche n'est pas terminée.
 
 ## Commandes
 
 - Environnement : **uv**. `uv sync` après toute modification de `pyproject.toml`. Toutes les commandes passent par `uv run`.
 - Tests : `uv run python -m unittest discover -s tests -t .`
-- Dogfooding (à partir de la phase 2) : `uv run furryp check furryp`
-- Fiche d'une règle (à partir de la phase 2) : `uv run furryp rule FUR101`
+- Dogfooding : `uv run furryp check furryp`
+- Fiche d'une règle : `uv run furryp rule FUR101`
 - **Interdit** : `uv add`, `uv pip install`, `pip install`, `uv init` (furryp n'a aucune dépendance d'exécution, ruff est sa seule dépendance de développement, et `uv init` écraserait la structure). ruff se lance avec `uv run ruff` (ex. `uv run ruff format`) ; un autre outil externe ponctuel passe par `uvx`.
 - Le code et les tests doivent fonctionner à l'identique sous Windows et Linux : `pathlib` pour les chemins, `subprocess` avec `encoding="utf-8"` dans les tests.
 
-## Fin de phase (obligatoire)
+## Fin de tâche (obligatoire)
 
-1. Tests verts et dogfooding vert pour les règles déjà implémentées ; aides et fiches des règles livrées présentes.
-2. Un résumé de 10 lignes maximum, puis arrête-toi : n'enchaîne pas sur la phase suivante.
+1. Tests verts et dogfooding vert ; aides et fiches des règles livrées présentes.
+2. Un résumé de 10 lignes maximum, puis arrête-toi.

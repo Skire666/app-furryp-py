@@ -35,7 +35,7 @@ class FunctionMetrics:
     """Measures of a function; ``name`` is qualified, without ``<locals>``.
 
     A nested function counts in its parent for the cognitive complexity and is
-    not evaluated alone (A13): its ``contributions`` are empty.
+    not evaluated alone: its ``contributions`` are empty.
     """
 
     name: str
