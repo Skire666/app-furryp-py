@@ -15,12 +15,12 @@
     ],
     "ask": [
       "Bash(git commit:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(pip install:*)",
+      "Bash(uv pip:*)",
+      "Bash(uv add:*)"
     ],
     "deny": [
-      "Bash(uv add:*)",
-      "Bash(uv pip:*)",
-      "Bash(pip install:*)",
       "Bash(uv init:*)"
     ]
   }

@@ -18,7 +18,7 @@ import json
 import types
 import typing
 from collections.abc import Callable, Mapping
-from typing import Any, Literal
+from typing import Any, ClassVar, Literal, Protocol
 
 from furryp.core.errors import did_you_mean
 from furryp.core.registry import CHECK_KEY
@@ -31,7 +31,7 @@ JSON_TYPE_NAMES = (
     (list, "array"),
     (dict, "object"),
 )
-EXPECTED_SCALARS = {bool: "a boolean", int: "an integer", float: "a number", str: "a string"}
+EXPECTED_SCALARS: dict[object, str] = {bool: "a boolean", int: "an integer", float: "a number", str: "a string"}
 
 TAG_KEY = "type"
 JSON_INDENT = 2
@@ -40,6 +40,12 @@ MISSING_KEY = 'missing key "{key}"'
 type Check = Callable[[Any], str | None]
 # An annotation as ``typing.get_type_hints`` gives it: a type, an alias, a union…
 type Hint = object
+
+
+class DataclassInstance(Protocol):
+    """What the functions of ``dataclasses`` require of an instance."""
+
+    __dataclass_fields__: ClassVar[dict[str, dataclasses.Field[Any]]]
 
 
 class SchemaError(Exception):
@@ -74,13 +80,13 @@ def expect_object(value: object, path: str) -> dict[str, object]:
     """Return ``value`` if it is a JSON object, else raise ``SchemaError``."""
     if not isinstance(value, dict):
         raise SchemaError(path, f"expected an object, got {json_type_name(value)}")
-    return value
+    return typing.cast(dict[str, object], value)
 
 
-def parse_dataclass[T](cls: type[T], data: object, path: str, base: T | None) -> T:
+def parse_dataclass[T: DataclassInstance](cls: type[T], data: object, path: str, base: object) -> T:
     """Return ``base`` (or the defaults of ``cls``) updated with ``data``."""
     mapping = expect_object(data, path)
-    start = cls() if base is None else base
+    start = cls() if base is None else typing.cast(T, base)
     fields = {json_key(item.name): item for item in dataclasses.fields(cls)}
     hints = typing.get_type_hints(cls)
     changes: dict[str, object] = {}
@@ -116,18 +122,18 @@ def parse_value(hint: Hint, value: object, path: str, current: object = None) ->
     if origin is types.UnionType:
         return _parse_union(typing.get_args(hint), value, path)
     if dataclasses.is_dataclass(hint):
-        return parse_dataclass(hint, value, path, current)
+        return parse_dataclass(typing.cast(type[DataclassInstance], hint), value, path, current)
     return _parse_scalar(hint, value, path)
 
 
-def _parse_scalar(hint: type, value: object, path: str) -> object:
+def _parse_scalar(hint: Hint, value: object, path: str) -> object:
     """Convert a boolean, an integer (>= 0), a number or a string."""
-    if hint is float and type(value) in {int, float}:
+    if hint is float and isinstance(value, int | float) and not isinstance(value, bool):
         return float(value)
     if type(value) is not hint:
         expected = EXPECTED_SCALARS[hint]
         raise SchemaError(path, f"expected {expected}, got {json_type_name(value)}")
-    if hint is int and value < 0:
+    if hint is int and isinstance(value, int) and value < 0:
         raise SchemaError(path, f"must be >= 0, got {value}")
     return value
 
@@ -145,7 +151,8 @@ def _parse_tuple(item_hint: Hint, value: object, path: str) -> tuple[object, ...
     """Convert a JSON array to a tuple of ``item_hint``."""
     if not isinstance(value, list):
         raise SchemaError(path, f"expected an array, got {json_type_name(value)}")
-    return tuple(parse_value(item_hint, item, f"{path}[{index}]") for index, item in enumerate(value))
+    items = typing.cast(list[object], value)
+    return tuple(parse_value(item_hint, item, f"{path}[{index}]") for index, item in enumerate(items))
 
 
 def _parse_dict(value_hint: Hint, value: object, path: str) -> dict[str, object]:
@@ -189,9 +196,9 @@ def dump_value(value: object) -> object:
     if dataclasses.is_dataclass(value) and not isinstance(value, type):
         return {json_key(item.name): dump_value(getattr(value, item.name)) for item in dataclasses.fields(value)}
     if isinstance(value, tuple):
-        return [dump_value(item) for item in value]
+        return [dump_value(item) for item in typing.cast(tuple[object, ...], value)]
     if isinstance(value, dict):
-        return {key: dump_value(item) for key, item in value.items()}
+        return {key: dump_value(item) for key, item in typing.cast(dict[str, object], value).items()}
     return value
 
 

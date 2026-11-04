@@ -128,6 +128,8 @@ def _tally_expression(node: ast.AST, level: int, parent: ast.AST | None, tally: 
         case ast.comprehension():
             for condition in node.ifs:
                 tally.add_increment(COMPREHENSION_IF, condition.lineno)
+        case _:
+            pass
 
 
 def _child_level(node: ast.AST, child: ast.AST, level: int) -> int:

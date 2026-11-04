@@ -10,7 +10,7 @@ La spécification normative est `docs/SPEC.md` : lis les sections utiles à la t
 - Trace toujours l'arbitrage et l'écart, y compris un écart avec ruff que j'ai décidé : le signalement dans ton résumé, et une proposition de report dans `docs/SPEC.md` (la section concernée, et le §2.3 pour un écart avec ruff).
 - **Aucune dépendance tierce**, ni à l'exécution ni pour les tests (`unittest` uniquement). N'installe rien.
 - Ne modifie jamais `docs/SPEC.md`, `AGENTS.md`, `CLAUDE.md` ni `README.md` (guide utilisateur, décrit le comportement attendu) sans demande explicite.
-- Pour faire passer le dogfooding, ne relâche **jamais** un seuil et n'ajoute **jamais** de `# foqa` ni de `per-file-ignores` sans mon accord explicite : corrige le code.
+- Pour faire passer le dogfooding ou basedpyright, ne relâche **jamais** un seuil et n'ajoute **jamais** de `# foqa`, de `per-file-ignores`, de `# type: ignore` ni de `# pyright: ignore` sans mon accord explicite : corrige le code.
 
 ## Conventions de code
 
@@ -37,11 +37,12 @@ Chaque module de `furryp/` respecte les règles qu'il implémente :
 - Environnement : **uv**. `uv sync` après toute modification de `pyproject.toml`. Toutes les commandes passent par `uv run`.
 - Tests : `uv run python -m unittest discover -s tests -t .`
 - Dogfooding : `uv run furryp check furryp`
+- Typage : `uv run basedpyright`
 - Fiche d'une règle : `uv run furryp rule FUR101`
-- **Interdit** : `uv add`, `uv pip install`, `pip install`, `uv init` (furryp n'a aucune dépendance d'exécution, ruff est sa seule dépendance de développement, et `uv init` écraserait la structure). ruff se lance avec `uv run ruff` (ex. `uv run ruff format`) ; un autre outil externe ponctuel passe par `uvx`.
+- **Interdit** : `uv add`, `uv pip install`, `pip install`, `uv init` (furryp n'a aucune dépendance d'exécution, ruff et basedpyright sont ses seules dépendances de développement, et `uv init` écraserait la structure). ruff et basedpyright se lancent avec `uv run` (ex. `uv run ruff format`, `uv run basedpyright`) ; un autre outil externe ponctuel passe par `uvx`.
 - Le code et les tests doivent fonctionner à l'identique sous Windows et Linux : `pathlib` pour les chemins, `subprocess` avec `encoding="utf-8"` dans les tests.
 
 ## Fin de tâche (obligatoire)
 
-1. Tests verts et dogfooding vert ; aides et fiches des règles livrées présentes.
+1. Tests verts, dogfooding vert et `uv run basedpyright` sans erreur ; aides et fiches des règles livrées présentes.
 2. Un résumé de 10 lignes maximum, puis arrête-toi.

@@ -145,7 +145,20 @@ max-locals = 12  # default: 15
 # Maximum number of nested blocks
 max-nested-blocks = 4  # default: 5
 
+[tool.basedpyright]
+
+# Same perimeter as ruff, which only looks at furryp/.
+include = ["furryp"]
+
+# Set on purpose: the minimum of requires-python, not the version of the active interpreter.
+pythonVersion = "3.14"
+
+# The level chosen for the project;
+typeCheckingMode = "strict" # "off" | "basic" | "standard" | "strict" | "all"
+
 [dependency-groups]
+
 dev = [
+    "basedpyright>=1.40.2",
     "ruff>=0.17.3",
 ]

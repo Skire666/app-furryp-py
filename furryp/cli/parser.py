@@ -1,7 +1,7 @@
 """Command-line parser: ``check`` and ``rule`` sub-commands (SPEC §4.1, §4.2)."""
 
 import argparse
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from pathlib import Path
 from typing import NoReturn
 
@@ -30,6 +30,9 @@ FLAG_OPTIONS = (
     ("--add-foqa", "Add a foqa directive on every existing violation and exit."),
 )
 
+# The ``add_parser`` method of what ``add_subparsers`` returns: argparse keeps that class private.
+type AddParser = Callable[..., argparse.ArgumentParser]
+
 
 class FurrypArgumentParser(argparse.ArgumentParser):
     """Parser raising ``UsageError`` instead of exiting on a usage error."""
@@ -39,11 +42,9 @@ class FurrypArgumentParser(argparse.ArgumentParser):
         raise UsageError("\n".join((message, self.format_usage().rstrip())))
 
 
-def _new_parser(commands: argparse._SubParsersAction, name: str, summary: str) -> argparse.ArgumentParser:
+def _new_parser(add_parser: AddParser, name: str, summary: str) -> argparse.ArgumentParser:
     """Add the sub-command ``name`` (no colours, suggestions on typos, and no abbreviated options, like ruff)."""
-    return commands.add_parser(
-        name, help=summary, description=summary, allow_abbrev=False, color=False, suggest_on_error=True
-    )
+    return add_parser(name, help=summary, description=summary, allow_abbrev=False, color=False, suggest_on_error=True)
 
 
 def _add_config_option(parser: argparse.ArgumentParser) -> None:
@@ -53,9 +54,9 @@ def _add_config_option(parser: argparse.ArgumentParser) -> None:
     )
 
 
-def _add_check_parser(commands: argparse._SubParsersAction) -> None:
+def _add_check_parser(add_parser: AddParser) -> None:
     """Add ``furryp check [PATHS]... [OPTIONS]``."""
-    check = _new_parser(commands, "check", "Check Python files.")
+    check = _new_parser(add_parser, "check", "Check Python files.")
     check.add_argument(
         "paths",
         nargs="*",
@@ -76,9 +77,9 @@ def _add_check_parser(commands: argparse._SubParsersAction) -> None:
     )
 
 
-def _add_rule_parser(commands: argparse._SubParsersAction) -> None:
+def _add_rule_parser(add_parser: AddParser) -> None:
     """Add ``furryp rule <CODE|NAME>`` and ``furryp rule --all``."""
-    rule = _new_parser(commands, "rule", "Show the documentation of a rule.")
+    rule = _new_parser(add_parser, "rule", "Show the documentation of a rule.")
     target = rule.add_mutually_exclusive_group(required=True)
     target.add_argument(
         "rule", nargs="?", metavar="CODE|NAME", help="Rule code (recommended, e.g. FUR101) or rule name."
@@ -94,8 +95,8 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--version", action="store_true", help="Print the version.")
     commands = parser.add_subparsers(dest="command", title="commands", metavar="COMMAND")
-    _add_check_parser(commands)
-    _add_rule_parser(commands)
+    _add_check_parser(commands.add_parser)
+    _add_rule_parser(commands.add_parser)
     return parser
 
 

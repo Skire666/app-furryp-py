@@ -115,7 +115,7 @@ class DirectiveAudit:
 
     def diagnostics(self, source: SourceFile) -> list[Diagnostic]:
         """Return one diagnostic per directive that does not fully serve."""
-        diagnostics = []
+        diagnostics: list[Diagnostic] = []
         for position, directive in enumerate(self._suppressions.directives):
             problem = self._problem(position, directive)
             if problem is not None:

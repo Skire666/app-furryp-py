@@ -41,7 +41,7 @@ class NotRated(StrEnum):
 
 
 RATINGS = "ABCDE"
-STATISTICS = {
+STATISTICS: Mapping[str, Callable[[Sequence[float]], float]] = {
     "mean": statistics.fmean,
     "median": lambda values: float(statistics.median(values)),
     "max": max,
