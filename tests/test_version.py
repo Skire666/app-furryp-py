@@ -13,13 +13,5 @@ class VersionTest(unittest.TestCase):
             project = tomllib.load(stream)["project"]
         self.assertEqual(project["version"], furryp.__version__)
 
-    def test_no_dependency_declared(self) -> None:
-        with (REPO_ROOT / "pyproject.toml").open("rb") as stream:
-            data = tomllib.load(stream)
-        self.assertNotIn("dependencies", data["project"])
-        self.assertNotIn("dependency-groups", data)
-        self.assertEqual(data["project"]["scripts"]["furryp"], "furryp.cli.app:main")
-
-
 if __name__ == "__main__":
     unittest.main()

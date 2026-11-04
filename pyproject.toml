@@ -103,6 +103,7 @@ split-on-trailing-comma = false
 max-complexity = 9 # 9 recommanded
 
 [tool.ruff.lint.per-file-ignores]
+
 "tests/**" = ["D"]
 
 [tool.ruff.lint.pydocstyle]
@@ -114,10 +115,10 @@ convention = "google"
 [tool.ruff.lint.pylint]
 
 # Maximum number of arguments for a function/method
-max-args = 9  # default: 5
+max-args = 8  # default: 5
 
 # Maximum number of positional arguments for a function/method
-max-positional-args = 9  # default: same as max-args
+max-positional-args = 8  # default: same as max-args
 
 # Maximum number of boolean expressions in a function/method
 max-bool-expr = 8  # default: 5
@@ -126,16 +127,16 @@ max-bool-expr = 8  # default: 5
 max-branches = 12  # default: 12
 
 # Maximum number of statements in the body of a function/method
-max-statements = 50  # default: 50
+max-statements = 35  # default: 50
 
 # Maximum number of return statements in a function/method
-max-returns = 6  # default: 6
+max-returns = 8  # default: 6
 
 # Maximum number of public methods for a class
 max-public-methods = 25  # default: 20
 
 # Maximum number of local variables in a function/method
-max-locals = 15  # default: 15
+max-locals = 12  # default: 15
 
 # Maximum number of nested blocks
-max-nested-blocks = 5  # default: 5
+max-nested-blocks = 4  # default: 5

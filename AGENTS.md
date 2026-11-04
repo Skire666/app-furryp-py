@@ -5,7 +5,7 @@ La spécification normative est `SPEC.md` : lis les sections citées par le prom
 
 ## Règles d'or
 
-- `SPEC.md` fait foi. En cas d'ambiguïté, ou si elle diverge de ruff : **vérifie d'abord le comportement réel de ruff** (`uvx ruff`, version notée), qui a la priorité (A39) ; si ruff n'a pas d'équivalent, **pose la question** au lieu d'inventer.
+- `SPEC.md` fait foi. En cas d'ambiguïté, ou si elle diverge de ruff : **vérifie d'abord le comportement réel de ruff** (`uv run ruff`, version notée), qui a la priorité (A39) ; si ruff n'a pas d'équivalent, **pose la question** au lieu d'inventer.
 - **Le but reste une bonne qualimétrie** : aligné sur ruff, furryp doit rester productif. Avant de retenir un choix, mesure son effet réel (par exemple sur la bibliothèque standard) ; si un choix, même validé ou venant de ruff, nuit à la qualité des mesures, signale-le chiffres à l'appui au lieu de l'appliquer sans rien dire.
 - Trace toujours l'arbitrage et l'écart, y compris un écart avec ruff que j'ai décidé : tout écart volontaire dans sa section « Écarts », le signalement dans ton résumé, et une proposition de report dans `SPEC.md` (§15).
 - **Une phase à la fois** : n'implémente rien qui relève d'une phase ultérieure (`SPEC.md` §14).
@@ -39,7 +39,7 @@ Chaque module de `furryp/` respecte les règles qu'il implémente :
 - Tests : `uv run python -m unittest discover -s tests -t .`
 - Dogfooding (à partir de la phase 2) : `uv run furryp check furryp`
 - Fiche d'une règle (à partir de la phase 2) : `uv run furryp rule FUR101`
-- **Interdit** : `uv add`, `uv pip install`, `pip install`, `uv init` (furryp n'a aucune dépendance, et `uv init` écraserait la structure). Un outil externe ponctuel passe par `uvx` (ex. `uvx ruff format`).
+- **Interdit** : `uv add`, `uv pip install`, `pip install`, `uv init` (furryp n'a aucune dépendance d'exécution, ruff est sa seule dépendance de développement, et `uv init` écraserait la structure). ruff se lance avec `uv run ruff` (ex. `uv run ruff format`) ; un autre outil externe ponctuel passe par `uvx`.
 - Le code et les tests doivent fonctionner à l'identique sous Windows et Linux : `pathlib` pour les chemins, `subprocess` avec `encoding="utf-8"` dans les tests.
 
 ## Fin de phase (obligatoire)
