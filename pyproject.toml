@@ -90,6 +90,11 @@ preview = true
 [tool.ruff.lint.flake8-annotations]
 allow-star-arg-any = true
 
+[tool.ruff.lint.isort]
+
+# The formatter ignores magic trailing commas (skip-magic-trailing-comma): isort must too.
+split-on-trailing-comma = false
+
 [tool.ruff.lint.mccabe]
 
 # Alert if cyclomatic complexity exceeds this threshold.
