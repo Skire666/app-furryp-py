@@ -198,8 +198,7 @@ def _base_names(node: ast.ClassDef, imports: ImportTable) -> Iterator[str]:
 def _is_test_class(
     node: ast.ClassDef, names: Iterable[str], imports: ImportTable
 ) -> bool:
-    """Whether a class is a ``unittest`` test case or is collected by pytest:
-    named ``Test…``, without ``__init__``."""
+    """Whether a class is a ``unittest`` test case or is collected by pytest: named ``Test…``, without ``__init__``."""
     for base in _base_names(node, imports):
         if base.rpartition(DOT)[2].endswith(TEST_BASE_SUFFIX):
             return True
@@ -275,16 +274,17 @@ def _is_dunder(name: str) -> bool:
 def _is_data_class(
     node: ast.ClassDef, functions: Sequence[FunctionNode], imports: ImportTable
 ) -> bool:
-    """Whether a class is declared as data, or has no other methods than dunders
-    and accessors."""
+    """Whether a class is declared as data, or has no other methods than dunders and accessors."""
     return _is_known_data_class(node, imports) or all(
         _is_dunder(item.name) or is_accessor(item) for item in functions
     )
 
 
 def _methods(node: ast.ClassDef) -> list[FunctionNode]:
-    """Return the functions of a class body, at any depth of its blocks; those of
-    a nested function or class are not its methods."""
+    """Return the functions of a class body, at any depth of its blocks.
+
+    Those of a nested function or class are not its methods.
+    """
     functions: list[FunctionNode] = []
     stack: list[ast.AST] = list(node.body)
     while stack:

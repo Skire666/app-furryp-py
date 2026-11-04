@@ -63,8 +63,7 @@ def render_header(diagnostic: Diagnostic) -> str:
 
 
 def render_entry(entry: Entry) -> str:
-    """Return the block of a diagnostic: header, arrow, excerpt, help and the
-    diff of its fix."""
+    """Return the block of a diagnostic: header, arrow, excerpt, help and the diff of its fix."""
     diagnostic, source = entry.diagnostic, entry.source
     start = diagnostic.span.start
     location = f"{entry.display}:{start.line}:{start.column}"
@@ -89,8 +88,10 @@ def render_entry(entry: Entry) -> str:
 
 
 def render_total(remaining: int, fixed: int) -> str:
-    """Return ``Found {n} error{s}.``, with the fixed and remaining counts after
-    ``--fix`` when at least one fix was applied (as ruff)."""
+    """Return the ``Found {n} error{s}.`` line.
+
+    It has the fixed and remaining counts after ``--fix`` when at least one fix was applied (as ruff).
+    """
     total = remaining + fixed
     if not fixed:
         return FOUND.format(count=total, plural=plural(total))

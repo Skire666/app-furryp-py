@@ -92,8 +92,10 @@ def _opcodes(before: Sequence[str], after: Sequence[str]) -> list[Opcode]:
 
 
 def _hunks(opcodes: Sequence[Opcode]) -> list[list[Opcode]]:
-    """Return the groups of changes, each keeping its lines of context; a run of
-    equal lines too long to be shown whole ends a group."""
+    """Return the groups of changes, each keeping its lines of context.
+
+    A run of equal lines too long to be shown whole ends a group.
+    """
     hunks: list[list[Opcode]] = []
     current: list[Opcode] = []
     for index, opcode in enumerate(opcodes):
@@ -116,8 +118,7 @@ def _hunks(opcodes: Sequence[Opcode]) -> list[list[Opcode]]:
 
 
 def render_fix(text: str, fix: Fix) -> tuple[str, ...]:
-    """Return the lines of the diff of ``fix`` on ``text``, empty if it changes
-    nothing."""
+    """Return the lines of the diff of ``fix`` on ``text``, empty if it changes nothing."""
     before = split_lines_with_breaks(text)
     after = split_lines_with_breaks(apply_edits(text, fix.edits))
     hunks = _hunks(_opcodes(before, after))

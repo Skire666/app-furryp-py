@@ -42,8 +42,7 @@ class FurrypArgumentParser(argparse.ArgumentParser):
 def _new_parser(
     commands: argparse._SubParsersAction, name: str, summary: str
 ) -> argparse.ArgumentParser:
-    """Add the sub-command ``name`` (no colours, suggestions on typos, and no
-    abbreviated options, like ruff)."""
+    """Add the sub-command ``name`` (no colours, suggestions on typos, and no abbreviated options, like ruff)."""
     return commands.add_parser(
         name,
         help=summary,

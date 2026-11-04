@@ -151,8 +151,10 @@ class FileMetrics:
         return class_metrics(self._source)
 
     def _token_range(self, node: FunctionNode) -> tuple[int, int]:
-        """Return the indexes of the counted tokens of a function, from the
-        ``def`` or ``async`` keyword to its end: decorators are left out."""
+        """Return the indexes of the counted tokens of a function, from the ``def`` or ``async`` keyword to its end.
+
+        Decorators are left out.
+        """
         start = node_start(self._source, node)
         end = node_end(self._source, node)
         return (

@@ -137,8 +137,7 @@ def _tally_expression(
 
 
 def _child_level(node: ast.AST, child: ast.AST, level: int) -> int:
-    """Return the nesting level of ``child``: operands of a ternary and the
-    body of a ``lambda`` go one level deeper."""
+    """Return the nesting level of ``child``: operands of a ternary and the body of a ``lambda`` go one level deeper."""
     if isinstance(node, ast.IfExp):
         return level + 1
     if isinstance(node, ast.Lambda) and child is node.body:

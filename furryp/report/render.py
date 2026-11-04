@@ -106,8 +106,10 @@ def _rules_table(category: Category) -> Html:
 
 
 def _empty_worst_files(category: Category, rows: list[Html]) -> Html:
-    """Return the sentence under an empty table of worst files; none if the category
-    is not rated, as saying that no file is in violation would claim a clean result."""
+    """Return the sentence under an empty table of worst files.
+
+    There is none if the category is not rated, as saying that no file is in violation would claim a clean result.
+    """
     if rows or category.not_rated is not None:
         return Html("")
     return fill("no_worst_files", {})

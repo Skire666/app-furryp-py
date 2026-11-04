@@ -77,8 +77,7 @@ def _codes(selectors: Iterable[str], registry: Registry) -> set[str]:
 
 
 def active_rules(settings: Settings, registry: Registry) -> frozenset[str]:
-    """Return the codes of the rules selected for the project (SPEC §4.5), before
-    ``per-file-ignores``."""
+    """Return the codes of the rules selected for the project (SPEC §4.5), before ``per-file-ignores``."""
     selected = _codes(settings.select + settings.extend_select, registry)
     return frozenset(selected - _codes(settings.ignore, registry)) | ALWAYS_SELECTED
 

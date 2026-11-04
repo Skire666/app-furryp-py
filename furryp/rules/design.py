@@ -1,5 +1,4 @@
-"""Design rules: FUR401 too-complex-class, FUR403 demeter-chain and FUR404
-too-many-instance-attributes (SPEC §11).
+"""Design rules: FUR401 too-complex-class, FUR403 demeter-chain and FUR404 too-many-instance-attributes (SPEC §11).
 
 FUR401 and FUR404 compare the measures of ``FileMetrics`` to their maximum.
 
@@ -129,8 +128,10 @@ class DemeterChainOptions:
 
 @dataclass(frozen=True, slots=True)
 class Chain:
-    """A maximal chain: its outermost node, its root and the number of attributes;
-    ``branches`` is what it does not cross."""
+    """A maximal chain: its outermost node, its root and the number of attributes.
+
+    ``branches`` is what it does not cross.
+    """
 
     node: ast.Attribute
     root: ast.expr

@@ -166,8 +166,7 @@ def _parse_dict(value_hint: Any, value: object, path: str) -> dict[str, object]:
 
 
 def _parse_union(members: tuple[Any, ...], value: object, path: str) -> object:
-    """Convert ``value`` to a member of a union; if none accepts it, the error
-    is that of the last member."""
+    """Convert ``value`` to a member of a union; if none accepts it, the error is that of the last member."""
     if all(dataclasses.is_dataclass(member) for member in members):
         return _parse_tagged(members, value, path)
     for member in members[:-1]:
@@ -177,8 +176,10 @@ def _parse_union(members: tuple[Any, ...], value: object, path: str) -> object:
 
 
 def _parse_tagged(members: tuple[Any, ...], value: object, path: str) -> object:
-    """Convert a JSON object to the dataclass named by its ``type`` key, the
-    default value of the ``type`` field of each member."""
+    """Convert a JSON object to the dataclass named by its ``type`` key.
+
+    The name of a member is the default value of its ``type`` field.
+    """
     mapping = expect_object(value, path)
     if TAG_KEY not in mapping:
         raise SchemaError(path, MISSING_KEY.format(key=TAG_KEY))

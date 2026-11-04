@@ -98,8 +98,7 @@ class Category:
 
 @dataclass(frozen=True, slots=True)
 class _Scope:
-    """What a category reads: the measured files, the codes of its rules, the
-    options of the rules and the rules that ran."""
+    """What a category reads: the measured files, the codes of its rules, the options of the rules and the rules that ran."""
 
     files: Sequence[FileSummary]
     codes: Sequence[str]
@@ -107,8 +106,10 @@ class _Scope:
     active: frozenset[str]
 
     def count_if_run(self, code: str, count: int) -> int | None:
-        """Return a count of violations; ``None`` if the rule did not run: 0 would
-        claim a clean result. A measure does not depend on the selection (§12.1)."""
+        """Return a count of violations; ``None`` if the rule did not run: 0 would claim a clean result.
+
+        A measure does not depend on the selection (§12.1).
+        """
         return count if code in self.active else None
 
 

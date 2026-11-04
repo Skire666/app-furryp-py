@@ -22,8 +22,7 @@ def _marker(code: str, fixable: set[str]) -> str:
 
 
 def render_statistics(diagnostics: Sequence[Diagnostic]) -> str:
-    """Return the count of violations per rule, then the footer, as ruff 0.17.3;
-    an empty text if there is no violation."""
+    """Return the count of violations per rule, then the footer, as ruff 0.17.3; an empty text if there is no violation."""
     counts = Counter(diagnostic.code for diagnostic in diagnostics)
     if not counts:
         return ""

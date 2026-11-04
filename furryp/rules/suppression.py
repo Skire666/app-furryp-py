@@ -141,8 +141,7 @@ class DirectiveAudit:
     def _problem(
         self, position: int, directive: Directive
     ) -> tuple[str, list[str]] | None:
-        """Return the message of a directive and its identifiers that served,
-        or ``None`` if it fully serves."""
+        """Return the message of a directive and its identifiers that served, or ``None`` if it fully serves."""
         if not directive.identifiers:
             if self._suppressions.is_used(position):
                 return None
@@ -159,8 +158,7 @@ class DirectiveAudit:
     def _classify(
         self, position: int, directive: Directive
     ) -> tuple[dict[Reason, list[str]], list[str]]:
-        """Return the reported identifiers of a directive, grouped by reason,
-        and the identifiers that served, in order."""
+        """Return the reported identifiers of a directive, grouped by reason, and the identifiers that served, in order."""
         groups: dict[Reason, list[str]] = {}
         kept: list[str] = []
         seen: set[str] = set()
@@ -179,8 +177,7 @@ class DirectiveAudit:
     def _reason(
         self, rule: Rule | None, duplicated: bool, position: int, identifier: str
     ) -> Reason | None:
-        """Return why an identifier is reported, or ``None`` if it served or
-        names no rule."""
+        """Return why an identifier is reported, or ``None`` if it served or names no rule."""
         if duplicated:
             return Reason.DUPLICATED
         if rule is None:

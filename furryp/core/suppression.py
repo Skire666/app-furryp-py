@@ -98,8 +98,10 @@ def format_directive(kind: DirectiveKind, identifiers: Iterable[str]) -> str:
 
 @dataclass(frozen=True, slots=True)
 class _RuleList:
-    """What follows a keyword: the identifiers and where they end, what makes the
-    directive invalid, and what only deserves a warning."""
+    """What follows a keyword.
+
+    The identifiers and where they end, what makes the directive invalid, and what only deserves a warning.
+    """
 
     identifiers: tuple[str, ...] = ()
     end: int = 0
@@ -109,8 +111,10 @@ class _RuleList:
 
 @dataclass(frozen=True, slots=True)
 class DirectiveScan:
-    """The directives of a file, in order, and the warnings about them: those of
-    the file directives first, as ruff prints them."""
+    """The directives of a file, in order, and the warnings about them.
+
+    The warnings of the file directives come first, as ruff prints them.
+    """
 
     directives: tuple[Directive, ...]
     warnings: tuple[str, ...]
@@ -169,8 +173,10 @@ def _parse_rule_list(
 
 
 def _parse_after_keyword(text: str, position: int, registry: Registry) -> _RuleList:
-    """Read what follows a keyword: a list after a colon, or a blanket directive
-    when a blank, a ``#`` or nothing follows, whatever comes next."""
+    """Read what follows a keyword.
+
+    It is a list after a colon, or a blanket directive when a blank, a ``#`` or nothing follows, whatever comes next.
+    """
     colon = COLON.match(text, position)
     if colon is not None:
         return _parse_rule_list(text, colon.end(), registry)
@@ -235,8 +241,7 @@ class _Scanner:
     def _parse(
         self, kind: DirectiveKind, match: re.Match[str], token: tokenize.TokenInfo
     ) -> _RuleList | None:
-        """Return what follows a keyword, or ``None`` if the directive is invalid;
-        the problems found go to the warnings."""
+        """Return what follows a keyword, or ``None`` if the directive is invalid; the problems found go to the warnings."""
         rules = _parse_after_keyword(token.string, match.end(), self._registry)
         location = self._location(token.start[0])
         if rules.invalid is not None:

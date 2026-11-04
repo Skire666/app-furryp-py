@@ -105,8 +105,10 @@ def _specificity(pattern: str) -> tuple[int, int]:
 def _level_of(
     layers: Sequence[LAYER], matches: Callable[[str], bool]
 ) -> tuple[int, str] | None:
-    """Return the level and the pattern of a module: the most specific pattern
-    accepted by ``matches``, the highest layer in a tie."""
+    """Return the level and the pattern of a module.
+
+    The pattern is the most specific one accepted by ``matches``, the highest layer in a tie.
+    """
     found = [
         (level, pattern)
         for level, layer in enumerate(layers)
@@ -118,8 +120,10 @@ def _level_of(
 
 @dataclass(frozen=True, slots=True)
 class LayersContract:
-    """From the highest layer to the lowest: a module never imports a layer
-    above its own; a sublist is one level, and other modules are free."""
+    """From the highest layer to the lowest: a module never imports a layer above its own.
+
+    A sublist is one level, and other modules are free.
+    """
 
     type: Literal["layers"] = "layers"
     name: str = ""
@@ -140,8 +144,10 @@ class LayersContract:
 
 @dataclass(frozen=True, slots=True)
 class IndependenceContract:
-    """None of ``modules`` imports another: with a ``*``, each module it matches
-    counts apart, and a module may import what is below itself."""
+    """None of ``modules`` imports another.
+
+    With a ``*``, each module it matches counts apart, and a module may import what is below itself.
+    """
 
     type: Literal["independence"] = "independence"
     name: str = ""

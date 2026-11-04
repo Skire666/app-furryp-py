@@ -40,8 +40,10 @@ UNSUPPRESSIBLE = frozenset({INVALID_SYNTAX.code, UNUSED_FOQA.code})
 
 @dataclass(frozen=True, slots=True)
 class FileReport:
-    """Result of a file: its source (``None`` if unreadable), its diagnostics and
-    its metrics (``None`` without a source), computed on first use."""
+    """Result of a file.
+
+    Its source (``None`` if unreadable), its diagnostics and its metrics (``None`` without a source), computed on first use.
+    """
 
     path: Path
     source: SourceFile | None

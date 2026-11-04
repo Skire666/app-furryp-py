@@ -46,8 +46,10 @@ def preamble_end(lines: Sequence[str]) -> int:
 
 
 def _line_end_to_add(source: SourceFile, line: int) -> str:
-    """Return the line break that an edited ``line`` lacks, as ``--add-noqa`` adds
-    it: only the last line of a file can lack one."""
+    """Return the line break that an edited ``line`` lacks, as ``--add-noqa`` adds it.
+
+    Only the last line of a file can lack one.
+    """
     start, following = source.line_bounds(line)
     return "" if start + len(source.lines[line - 1]) < following else source.newline
 

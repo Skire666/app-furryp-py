@@ -100,8 +100,10 @@ def _header(
 def _summary(
     files: Sequence[FileSummary], in_error: int, active: frozenset[str]
 ) -> Summary:
-    """Return the cards of the summary; the files in error are only counted, and the
-    unused directives are unknown if FUR001 did not run."""
+    """Return the cards of the summary.
+
+    The files in error are only counted, and the unused directives are unknown if FUR001 did not run.
+    """
     code_lines = sum(file.code_lines for file in files)
     violations = sum(file.violations.total() for file in files)
     unused = sum(file.violations[UNUSED_FOQA.code] for file in files)

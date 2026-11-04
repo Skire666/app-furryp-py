@@ -92,8 +92,10 @@ def import_table(tree: ast.Module | None) -> ImportTable:
 
 
 def is_type_checking_test(test: ast.expr, imports: ImportTable) -> bool:
-    """Whether ``test`` is ``TYPE_CHECKING`` as ruff sees it: the name, any
-    ``x.TYPE_CHECKING`` attribute, or an alias of ``typing.TYPE_CHECKING``."""
+    """Whether ``test`` is ``TYPE_CHECKING`` as ruff sees it.
+
+    That is the name, any ``x.TYPE_CHECKING`` attribute, or an alias of ``typing.TYPE_CHECKING``.
+    """
     if isinstance(test, ast.Attribute):
         return test.attr == TYPE_CHECKING
     if isinstance(test, ast.Name):

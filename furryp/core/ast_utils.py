@@ -88,8 +88,7 @@ def node_end(source: SourceFile, node: Located) -> tuple[int, int]:
 
 
 def node_span(source: SourceFile, node: Located) -> Span:
-    """Return the span of a whole statement, expression or imported name, on any
-    lines."""
+    """Return the span of a whole statement, expression or imported name, on any lines."""
     start_line, start_column = node_start(source, node)
     end_line, end_column = node_end(source, node)
     return Span(

@@ -1,5 +1,4 @@
-"""Metric rules: FUR201 halstead-file, FUR202 halstead-function and FUR203
-cognitive-complexity (SPEC §11).
+"""Metric rules: FUR201 halstead-file, FUR202 halstead-function and FUR203 cognitive-complexity (SPEC §11).
 
 The measures come from ``FileMetrics``; these rules compare them to their
 thresholds. Their help is one fixed sentence: naming what weighs the most would

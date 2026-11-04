@@ -42,8 +42,7 @@ def _is_irrefutable(pattern: ast.pattern) -> bool:
 
 
 def _match_branches(node: ast.Match) -> int:
-    """Return the branches of a ``match``; a last irrefutable ``case`` without
-    guard is like the ``else`` of an ``if``."""
+    """Return the branches of a ``match``; a last irrefutable ``case`` without guard is like the ``else`` of an ``if``."""
     last = node.cases[-1]
     if last.guard is None and _is_irrefutable(last.pattern):
         return len(node.cases) - 1

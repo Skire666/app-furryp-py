@@ -69,8 +69,10 @@ def record_walk_error(errors: list[WalkError], top: Path, error: OSError) -> Non
 
 @dataclass(frozen=True, slots=True)
 class DiscoveryResult:
-    """Files to check, arguments that do not exist (FUR000), and directories
-    that cannot be listed (a warning, as ruff does)."""
+    """Files to check, arguments that do not exist (FUR000), and directories that cannot be listed.
+
+    A directory that cannot be listed is a warning, as ruff does.
+    """
 
     files: tuple[Path, ...]
     missing: tuple[Path, ...]

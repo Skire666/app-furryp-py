@@ -27,8 +27,10 @@ CHECK_KEY = "check"
 
 @dataclass(frozen=True, slots=True)
 class RuleContext[O, M = object]:
-    """What a rule sees of a file: the source, the typed rule options, the
-    names imported by the module, its metrics and the project.
+    """What a rule sees of a file.
+
+    The source, the typed rule options, the names imported by the module, its
+    metrics and the project.
 
     ``M`` is the type of the metrics, which live in a higher layer: a rule that
     reads them writes ``RuleContext[Options, FileMetrics]``.
@@ -68,8 +70,7 @@ class Rule:
 
 
 def options_of[O](rules: Mapping[str, object], name: str, kind: type[O]) -> O:
-    """Return the options of the rule ``name``, or its defaults if it is not
-    registered (fake registries of the tests)."""
+    """Return the options of the rule ``name``, or its defaults if it is not registered (fake registries of the tests)."""
     value = rules.get(name)
     return value if isinstance(value, kind) else kind()
 

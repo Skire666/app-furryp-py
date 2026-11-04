@@ -33,8 +33,10 @@ class AnalysisError:
 
 @dataclass(frozen=True, slots=True)
 class FailedFile:
-    """A file left out of the aggregates; ``violations`` is its whole count of
-    diagnostics, which still decides the exit code."""
+    """A file left out of the aggregates.
+
+    ``violations`` is its whole count of diagnostics, which still decides the exit code.
+    """
 
     errors: tuple[AnalysisError, ...]
     violations: int
