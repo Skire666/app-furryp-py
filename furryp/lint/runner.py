@@ -42,7 +42,8 @@ UNSUPPRESSIBLE = frozenset({INVALID_SYNTAX.code, UNUSED_FOQA.code})
 class FileReport:
     """Result of a file.
 
-    Its source (``None`` if unreadable), its diagnostics and its metrics (``None`` without a source), computed on first use.
+    Its source (``None`` if unreadable), its diagnostics and its metrics
+    (``None`` without a source), computed on first use.
     """
 
     path: Path
@@ -72,6 +73,7 @@ class Linter:
         cwd: Path,
         warn: Callable[[str], None] = ignore_warning,
     ) -> None:
+        """Keep what every check needs; ``warn`` receives the directive warnings."""
         self._registry = registry
         self._settings = settings
         self._root = root

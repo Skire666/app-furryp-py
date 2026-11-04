@@ -437,16 +437,16 @@ furryp/
   __init__.py                # __version__
   __main__.py                # python -m furryp
   cli/        parser.py  app.py  rule.py           # argparse, orchestration, codes de sortie, `furryp rule`
-  config/     options.py  defaults.py  loader.py  selection.py
-  core/       source.py  diagnostic.py  discovery.py  suppression.py
+  config/     options.py  defaults.py  loader.py  schema.py  selection.py
+  core/       source.py  diagnostic.py  discovery.py  errors.py  paths.py  suppression.py
               registry.py  names.py  ast_utils.py  positions.py  project.py
   metrics/    lines.py  halstead.py  cognitive.py  cyclomatic.py  classes.py  file_metrics.py
-  rules/      __init__.py (ALL_RULES)  syntax.py  suppression.py  size.py  metrics.py
-              design.py  contracts.py
+  rules/      __init__.py  catalog.py (ALL_RULES)  syntax.py  suppression.py  size.py
+              metrics.py  design.py  contracts.py
               docs/  FUR000.md … FUR404.md          # fiches affichées par `furryp rule`
   lint/       runner.py                            # règles sélectionnées → filtre foqa → FUR001
   fix/        engine.py  diff.py  foqa.py              # foqa.py : --add-foqa
-  output/     terminal.py  snippet.py  statistics.py  settings.py  rule_doc.py
+  output/     terminal.py  snippet.py  statistics.py  settings.py  rule_doc.py  fix_preview.py
   report/     files.py  categories.py  model.py  render.py  templates/ (page.html, *.html, report.css)
 tests/
   fixtures/<nom-de-règle>/ ok_*.py  ko_*.py  ko_*.expected
@@ -498,7 +498,7 @@ class Diagnostic:
 - `FileMetrics` : calculé une fois par fichier (paresseusement) et partagé par les règles de métriques **et** le rapport : lignes, lignes de code, Halstead du fichier, liste de `FunctionMetrics` (nom qualifié, span du nom, lignes de code, Halstead, complexité cognitive et ses contributions), liste de `ClassMetrics` (nom, span du nom, complexité, nombre d'attributs d'instance, classe de test, de dispatch ou de données), une par classe.
 - `Rule` : `code`, `name`, `category`, `summary`, `options_type` (dataclass avec défauts), `fixable` (booléen), `scope` (`line` ou `file`, §6.1), et `check(context) -> Iterable[Diagnostic]`. `context` donne le `SourceFile`, les options typées, le `FileMetrics`, les noms importés (`ImportTable`, §10.5) et le `ProjectContext` (racine, résolution de noms de modules). Chaque règle a sa fiche `rules/docs/<code>.md` (§4.6).
 - FUR001 est déclarée comme une règle (code, nom, fiche, sélection) mais évaluée par `lint.runner` après le filtrage `foqa`, seul à connaître l'usage de chaque directive.
-- Registre : `rules/__init__.py` expose `ALL_RULES` (liste explicite) ; le cœur n'importe jamais les règles.
+- Registre : `rules/catalog.py` définit `ALL_RULES` (liste explicite), réexporté par `rules/__init__.py` ; le cœur n'importe jamais les règles.
 
 ### 9.3 Pipeline
 
@@ -642,6 +642,7 @@ Chaque fiche ci-dessous donne le gabarit exact de son `help:`.
       """Doc."""
       # commentaire
       y = x + 1
+      y = y * 2
 
       z = call(y)
       return z
@@ -952,3 +953,4 @@ Chaque arbitrage peut être changé ; il faut alors mettre à jour la section co
 | A75 | **Validé.** Aides de FUR201 et FUR202, décision de l'utilisateur : `does a lot` remplace `holds a lot of logic`, trompeur sur du code d'interface (complexité cognitive médiane de 1 sur les 74 alertes de FUR202 d'aspirabot). La signature reste comptée dans FUR202 : plus simple à expliquer, alors que 28 de ces 74 alertes passeraient sans elle. Le nombre de paramètres relève de PLR0913 de ruff. | FUR201, FUR202 |
 | A76 | **Validé.** FUR001 et `--add-foqa` comme ruff 0.17.3, trouvé par la revue de phase 8, recommandation suivie par l'utilisateur. **Directive de fichier d'abord** : elle supprime le diagnostic, et une directive de ligne qui le couvre aussi est signalée comme inutile. **`# furryp: foqa` global** : il exempte tout son fichier de FUR001, directives de ligne comprises. **Dernière ligne sans fin de ligne** : `--add-foqa` lui en ajoute une s'il la modifie. **À savoir** : un `# furryp: foqa` devenu inutile n'est plus signalé et continue de tout masquer dans son fichier ; `--add-foqa` n'en écrit jamais, et les violations restent comptées dans la colonne « Suppressed » du rapport. **Différences restantes** : une directive qui nomme FUR001 ne la supprime pas, alors que ruff accepte `# noqa: RUF100` (A32) ; un fichier sans aucune fin de ligne reçoit `\n` sur toutes les plateformes, alors que ruff écrit celle du système (`\r\n` sous Windows). | 6, 6.1, FUR001 |
 | A77 | **Validé.** Seuils par défaut, décision de l'utilisateur, qui remplacent ceux d'A74 : `function-too-long` 26 (au lieu de 25), `file-too-long` 1000 (1200), `halstead-file` 15000 (40000), `halstead-function` 1200 (1000), `cognitive-complexity` 16 (20), `too-complex-class` 80 (70), `too-many-instance-attributes` 20 (14).
+| A78 | **Validé.** Anomalies de `uvx ruff check .` (ruff 0.17.3, `pyproject.toml` du projet, 57 fichiers `.py`, `tests/` exclu par `extend-exclude`), recommandation suivie par l'utilisateur : 57 → 0, sans toucher aux seuils ni ajouter de suppression. Trois conséquences sur la structure : `ALL_RULES` est défini dans `rules/catalog.py` et réexporté par `rules/__init__.py` (RUF067) ; les messages d'erreur vivent dans les classes d'exception (TRY003) ; `Html` du rapport est un dataclass gelé et non plus un `str` (FURB189 : le `UserString` conseillé par ruff casse `join` et `write_text`). Les sorties ne changent pas : sortie par défaut et `--statistics` identiques sur une copie de `tests/`, rapport HTML identique hors date et temps d'analyse. L'arborescence du §9.1 reçoit aussi les modules qui y manquaient : `schema.py`, `errors.py`, `paths.py`, `fix_preview.py`. | 9.1, 9.2 |

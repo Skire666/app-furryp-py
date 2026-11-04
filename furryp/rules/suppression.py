@@ -113,6 +113,7 @@ class DirectiveAudit:
     def __init__(
         self, suppressions: Suppressions, registry: Registry, selected: frozenset[str]
     ) -> None:
+        """Keep the filter of the file, the registry and the selected codes."""
         self._suppressions = suppressions
         self._registry = registry
         self._selected = selected
@@ -158,7 +159,10 @@ class DirectiveAudit:
     def _classify(
         self, position: int, directive: Directive
     ) -> tuple[dict[Reason, list[str]], list[str]]:
-        """Return the reported identifiers of a directive, grouped by reason, and the identifiers that served, in order."""
+        """Return the reported identifiers of a directive and those that served.
+
+        The reported ones are grouped by reason; those that served stay in order.
+        """
         groups: dict[Reason, list[str]] = {}
         kept: list[str] = []
         seen: set[str] = set()

@@ -7,7 +7,12 @@ from enum import StrEnum
 from typing import Any
 
 from furryp.core.diagnostic import Diagnostic
-from furryp.core.errors import UnknownRuleError, did_you_mean, format_suggestion
+from furryp.core.errors import (
+    RULE_OR_PREFIX,
+    UnknownRuleError,
+    did_you_mean,
+    format_suggestion,
+)
 from furryp.core.names import ImportTable
 from furryp.core.project import ProjectContext
 from furryp.core.source import SourceFile
@@ -70,7 +75,10 @@ class Rule:
 
 
 def options_of[O](rules: Mapping[str, object], name: str, kind: type[O]) -> O:
-    """Return the options of the rule ``name``, or its defaults if it is not registered (fake registries of the tests)."""
+    """Return the options of the rule ``name``, or its defaults if it is not registered.
+
+    A rule may be missing from the fake registries of the tests.
+    """
     value = rules.get(name)
     return value if isinstance(value, kind) else kind()
 
@@ -79,6 +87,7 @@ class Registry:
     """Lookup of rules by code, code prefix (``FUR``, ``FUR4``…) or name."""
 
     def __init__(self, rules: Iterable[Rule]) -> None:
+        """Sort ``rules`` by code and index them by code and by name."""
         self._rules = tuple(sorted(rules, key=lambda rule: rule.code))
         self._by_key = {
             key: rule for rule in self._rules for key in (rule.code, rule.name)
@@ -98,7 +107,7 @@ class Registry:
         rule = self.find(identifier)
         if rule is None:
             hint = did_you_mean(identifier, self._by_key)
-            raise UnknownRuleError(f'unknown rule "{identifier}"{hint}')
+            raise UnknownRuleError(hint, identifier)
         return rule
 
     def by_name(self, name: str) -> Rule:
@@ -110,7 +119,7 @@ class Registry:
             hint = format_suggestion(rule.name)
         else:
             hint = did_you_mean(name, [known.name for known in self._rules])
-        raise UnknownRuleError(f"unknown rule{hint}")
+        raise UnknownRuleError(hint)
 
     def resolve(self, selector: str) -> tuple[Rule, ...]:
         """Return the rules selected by a code, a code prefix or a name."""
@@ -122,7 +131,7 @@ class Registry:
             if matched or selector == ALL_RULES_PREFIX:
                 return matched
         hint = did_you_mean(selector, self._selectors())
-        raise UnknownRuleError(f'unknown rule or prefix "{selector}"{hint}')
+        raise UnknownRuleError(hint, selector, kind=RULE_OR_PREFIX)
 
     def _selectors(self) -> tuple[str, ...]:
         """Every valid selector: ``FUR``, family prefixes, codes and names."""

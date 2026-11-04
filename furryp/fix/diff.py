@@ -1,8 +1,8 @@
-"""Output of ``furryp check --diff`` (SPEC §5.3), as ruff prints it.
+r"""Output of ``furryp check --diff`` (SPEC §5.3), as ruff prints it.
 
 Each changed file gives a unified diff (``difflib``) whose two headers are its
 displayed path, with the lines keeping their own line breaks; a last line
-without line break is followed by ``\\ No newline at end of file``, and a
+without line break is followed by ``\ No newline at end of file``, and a
 blank line follows each file. The footer counts the fixes; ruff prints none
 when nothing would be fixed.
 """

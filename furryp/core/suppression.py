@@ -241,7 +241,10 @@ class _Scanner:
     def _parse(
         self, kind: DirectiveKind, match: re.Match[str], token: tokenize.TokenInfo
     ) -> _RuleList | None:
-        """Return what follows a keyword, or ``None`` if the directive is invalid; the problems found go to the warnings."""
+        """Return what follows a keyword, or ``None`` if the directive is invalid.
+
+        The problems found go to the warnings.
+        """
         rules = _parse_after_keyword(token.string, match.end(), self._registry)
         location = self._location(token.start[0])
         if rules.invalid is not None:
@@ -291,6 +294,7 @@ class Suppressions:
     """
 
     def __init__(self, directives: tuple[Directive, ...], registry: Registry) -> None:
+        """Start with no directive recorded as used."""
         self._directives = directives
         self._registry = registry
         self._used: set[tuple[int, str | None]] = set()

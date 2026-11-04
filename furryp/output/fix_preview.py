@@ -102,7 +102,7 @@ def _hunks(opcodes: Sequence[Opcode]) -> list[list[Opcode]]:
         tag, first, last, new_first, new_last = opcode
         if tag != EQUAL:
             current.append(opcode)
-        elif last - first > MAX_EQUAL_LINES_SHOWN or index in (0, len(opcodes) - 1):
+        elif last - first > MAX_EQUAL_LINES_SHOWN or index in {0, len(opcodes) - 1}:
             if current:
                 keep = min(CONTEXT_LINES, last - first)
                 current.append(

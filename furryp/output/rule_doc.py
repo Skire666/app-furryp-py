@@ -26,6 +26,14 @@ FIX_NOT_AVAILABLE = "not available"
 RULE_SEPARATOR = "\n\n---\n\n"
 
 
+class RuleDocError(ValueError):
+    """The documentation of a rule lacks a section: a defect of the rule."""
+
+    def __init__(self, code: str, anchor: str) -> None:
+        """Name the file and the section."""
+        super().__init__(f"{code}.md has no {anchor!r} section")
+
+
 def read_rule_doc(code: str) -> str:
     """Return the written documentation of the rule ``code``."""
     path = resources.files(DOCS_PACKAGE).joinpath(DOCS_DIRECTORY, f"{code}.md")
@@ -57,7 +65,7 @@ def render_rule(rule: Rule, settings: Settings) -> str:
     metadata = f"Category: {rule.category} · Scope: {rule.scope} · Fix: {fix}"
     before, anchor, after = read_rule_doc(rule.code).partition(OPTIONS_ANCHOR)
     if not anchor:
-        raise ValueError(f"{rule.code}.md has no {OPTIONS_ANCHOR!r} section")
+        raise RuleDocError(rule.code, OPTIONS_ANCHOR)
     options = render_options(rule, settings.rules.get(rule.name))
     body = f"{before.rstrip()}\n\n{options}\n\n{anchor}{after.rstrip()}"
     return f"# {rule.name} ({rule.code})\n\n{metadata}\n\n{body}"

@@ -1,8 +1,8 @@
 """Rule selectors: validation, command-line selection, selection per file.
 
 Every selector names a rule (code or name), a code prefix or ``FUR`` (SPEC
-§4.5). The selection of a file is (``select``) ∪ ``extend-select`` −
-``ignore`` − applicable ``per-file-ignores``; ``ignore`` always wins, and
+§4.5). The selection of a file is ``select`` plus ``extend-select``, minus
+``ignore`` and the applicable ``per-file-ignores``; ``ignore`` always wins, and
 FUR000 is always selected.
 """
 
@@ -13,7 +13,7 @@ from pathlib import PurePosixPath
 from furryp.config.options import Settings
 from furryp.config.schema import SchemaError, child_path
 from furryp.core.discovery import path_matches
-from furryp.core.errors import UnknownRuleError, UsageError
+from furryp.core.errors import OptionError, UnknownRuleError
 from furryp.core.registry import Registry
 from furryp.rules.syntax import INVALID_SYNTAX
 
@@ -48,12 +48,12 @@ def validate_selectors(settings: Settings, registry: Registry) -> None:
 
 
 def _validate_option(option: str, selectors: Iterable[str], registry: Registry) -> None:
-    """Raise ``UsageError`` at the first unknown selector of a CLI option."""
+    """Raise ``OptionError`` at the first unknown selector of a CLI option."""
     for selector in selectors:
         try:
             registry.resolve(selector)
         except UnknownRuleError as error:
-            raise UsageError(f"{option}: {error}") from None
+            raise OptionError(option, error) from None
 
 
 def apply_cli_selection(

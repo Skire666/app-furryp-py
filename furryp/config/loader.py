@@ -30,6 +30,22 @@ RULES_KEY = "rules"
 NO_OPTIONS = "rule has no options"
 
 
+class DuplicateKeyError(ValueError):
+    """A key given twice in a JSON object."""
+
+    def __init__(self, key: str) -> None:
+        """Name the key."""
+        super().__init__(f'duplicate key "{key}"')
+
+
+class ForbiddenConstantError(ValueError):
+    """A non-standard JSON constant: ``NaN``, ``Infinity`` or ``-Infinity``."""
+
+    def __init__(self, constant: str) -> None:
+        """Name the constant."""
+        super().__init__(f"{constant} is not allowed")
+
+
 @dataclass(frozen=True, slots=True)
 class Configuration:
     """Effective settings, with the project root and the file they come from."""
@@ -83,15 +99,13 @@ def _load_file(path: Path, cwd: Path, base: Settings, registry: Registry) -> Set
     try:
         return parse_settings(read_json(path), base, registry)
     except OSError as error:
-        raise ConfigError(
-            f"{label}: cannot read file: {error.strerror or error}"
-        ) from None
+        raise ConfigError(label, f"cannot read file: {error.strerror or error}") from None
     except UnicodeDecodeError:
-        raise ConfigError(f"{label}: file is not valid UTF-8") from None
+        raise ConfigError(label, "file is not valid UTF-8") from None
     except ValueError as error:
-        raise ConfigError(f"{label}: invalid JSON: {error}") from None
+        raise ConfigError(label, f"invalid JSON: {error}") from None
     except SchemaError as error:
-        raise ConfigError(f"{label}: {error}") from None
+        raise ConfigError(label, error) from None
 
 
 def read_json(path: Path) -> object:
@@ -105,14 +119,14 @@ def _unique_keys(pairs: list[tuple[str, object]]) -> dict[str, object]:
     result: dict[str, object] = {}
     for key, value in pairs:
         if key in result:
-            raise ValueError(f'duplicate key "{key}"')
+            raise DuplicateKeyError(key)
         result[key] = value
     return result
 
 
 def _refuse(constant: str) -> NoReturn:
     """Refuse the non-standard constants ``NaN``, ``Infinity`` and ``-Infinity``."""
-    raise ValueError(f"{constant} is not allowed")
+    raise ForbiddenConstantError(constant)
 
 
 def parse_settings(data: object, base: Settings, registry: Registry) -> Settings:

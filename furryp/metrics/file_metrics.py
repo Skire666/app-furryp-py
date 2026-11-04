@@ -98,6 +98,7 @@ class FileMetrics:
     """The measures of a file; each of them is computed once, on first use."""
 
     def __init__(self, source: SourceFile) -> None:
+        """Keep ``source``; nothing is measured yet."""
         self._source = source
 
     @cached_property

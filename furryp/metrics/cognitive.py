@@ -209,6 +209,19 @@ def _tally_simple(node: ast.stmt, level: int, tally: _Tally) -> list[Nested]:
     return []
 
 
+def _tally_other(node: ast.stmt, level: int, tally: _Tally) -> list[Nested]:
+    """Record a statement that needs neither the source nor its clause keywords."""
+    match node:
+        case ast.With() | ast.AsyncWith():
+            return _tally_with(node, level, tally)
+        case ast.Match():
+            return _tally_match(node, level, tally)
+        case ast.FunctionDef() | ast.AsyncFunctionDef() | ast.ClassDef():
+            return _tally_definition(node, level, tally)
+        case _:
+            return _tally_simple(node, level, tally)
+
+
 class _Walker:
     """Walks the statements of a function and collects their contributions."""
 
@@ -237,14 +250,8 @@ class _Walker:
                 return self._tally_loop(node, level, tally)
             case ast.Try() | ast.TryStar():
                 return self._tally_try(node, level, tally)
-            case ast.With() | ast.AsyncWith():
-                return _tally_with(node, level, tally)
-            case ast.Match():
-                return _tally_match(node, level, tally)
-            case ast.FunctionDef() | ast.AsyncFunctionDef() | ast.ClassDef():
-                return _tally_definition(node, level, tally)
             case _:
-                return _tally_simple(node, level, tally)
+                return _tally_other(node, level, tally)
 
     def _elif_of(self, node: ast.If) -> ast.If | None:
         """Return the ``If`` of the ``elif`` clause of ``node``, if any."""

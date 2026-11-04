@@ -55,5 +55,5 @@ class Settings:
 
 
 def file_filter(settings: Settings) -> FileFilter:
-    """Return the file filter of ``settings`` (``exclude`` ∪ ``extend-exclude``)."""
+    """Return the file filter of ``settings`` (``exclude`` plus ``extend-exclude``)."""
     return FileFilter(settings.include, settings.exclude + settings.extend_exclude)

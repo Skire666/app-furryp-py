@@ -163,8 +163,8 @@ class EscapingTest(unittest.TestCase):
 
     def test_only_a_rendered_fragment_is_not_escaped(self) -> None:
         self.assertEqual(fill("no_config_file", {}), Html("<em>none, defaults</em>"))
-        self.assertIn("&lt;b&gt;", fill("banner", {"count": "<b>"}))
-        self.assertIn("<b>", fill("banner", {"count": Html("<b>")}))
+        self.assertIn("&lt;b&gt;", fill("banner", {"count": "<b>"}).text)
+        self.assertIn("<b>", fill("banner", {"count": Html("<b>")}).text)
 
 
 class RatingDisplayTest(unittest.TestCase):

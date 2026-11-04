@@ -80,7 +80,7 @@ def module_matches(pattern: str, module: str) -> bool:
     expected = pattern.split(DOT)
     segments = module.split(DOT)
     return len(segments) >= len(expected) and all(
-        wanted in (WILDCARD, segment)
+        wanted in {WILDCARD, segment}
         for wanted, segment in zip(expected, segments, strict=False)
     )
 

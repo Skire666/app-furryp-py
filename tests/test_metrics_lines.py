@@ -10,9 +10,9 @@ SPEC_EXAMPLE = (
     '    """Doc."""\n'
     "    # commentaire\n"
     "    y = x + 1\n"
+    "    y = y * 2\n"
     "\n"
-    "    z = call(\n"
-    "        y)\n"
+    "    z = call(y)\n"
     "    return z\n"
 )
 LOAD = (

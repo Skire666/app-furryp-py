@@ -1,7 +1,7 @@
-"""Output of ``furryp check --statistics`` (SPEC §5.4).
+r"""Output of ``furryp check --statistics`` (SPEC §5.4).
 
 One line per rule with at least one violation, by decreasing count then by
-code: ``{count:>N}\\t{code}\\t{marker} {name}``, then the footer.
+code: ``{count:>N}\t{code}\t{marker} {name}``, then the footer.
 """
 
 from collections import Counter
@@ -22,7 +22,10 @@ def _marker(code: str, fixable: set[str]) -> str:
 
 
 def render_statistics(diagnostics: Sequence[Diagnostic]) -> str:
-    """Return the count of violations per rule, then the footer, as ruff 0.17.3; an empty text if there is no violation."""
+    """Return the count of violations per rule, then the footer, as ruff 0.17.3.
+
+    The text is empty if there is no violation.
+    """
     counts = Counter(diagnostic.code for diagnostic in diagnostics)
     if not counts:
         return ""

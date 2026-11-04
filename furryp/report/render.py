@@ -8,7 +8,7 @@ rendered from a template (``Html``).
 import functools
 import html
 from collections.abc import Iterable, Mapping
-from dataclasses import fields
+from dataclasses import dataclass, fields
 from importlib import resources
 from pathlib import Path
 from string import Template
@@ -25,16 +25,20 @@ STYLE_SHEET = "report.css"
 REPORT_ENCODING = "utf-8"
 REPORT_ENCODING_ERRORS = "replace"
 REPORT_NEWLINE = "\n"
-NOT_AVAILABLE = "–"
+NOT_AVAILABLE = "\N{EN DASH}"
 NOT_RATED = "*"
 NOT_RATED_CLASS = "none"
 LINE = "\n"
 
 
-class Html(str):
+@dataclass(frozen=True, slots=True)
+class Html:
     """A fragment rendered from a template: it is not escaped again."""
 
-    __slots__ = ()
+    text: str
+
+
+type Filler = Value | Html
 
 
 def read_template(name: str) -> str:
@@ -64,20 +68,20 @@ def format_value(value: Value) -> str:
     return value
 
 
-def _display(value: Value) -> str:
+def _display(value: Filler) -> str:
     """Return the text put in a template: every value but ``Html`` is escaped."""
-    return value if isinstance(value, Html) else html.escape(format_value(value))
+    return value.text if isinstance(value, Html) else html.escape(format_value(value))
 
 
-def fill(name: str, values: Mapping[str, Value]) -> Html:
+def fill(name: str, values: Mapping[str, Filler]) -> Html:
     """Return the template ``{name}.html`` filled with ``values``."""
     shown = {key: _display(value) for key, value in values.items()}
     return Html(_template(name).substitute(shown))
 
 
-def _lines(fragments: Iterable[str]) -> Html:
+def _lines(fragments: Iterable[Html]) -> Html:
     """Return fragments, one per line."""
-    return Html(LINE.join(fragments))
+    return Html(LINE.join(fragment.text for fragment in fragments))
 
 
 def _values_of(item: Header | Summary | AnalysisError | RuleRow) -> dict[str, Value]:
@@ -188,7 +192,7 @@ def _banner(errors: tuple[AnalysisError, ...]) -> Html:
     return fill("banner", {"count": len({error.path for error in errors})})
 
 
-def _config_file(header: Header) -> Value:
+def _config_file(header: Header) -> Filler:
     """Return the configuration file, or the fragment that says there is none."""
     return header.config_file or fill("no_config_file", {})
 
@@ -207,7 +211,7 @@ def render_report(model: ReportModel) -> str:
             "errors": _render_errors(model.errors),
             "appendix": fill("appendix", {"configuration": model.configuration}),
         },
-    )
+    ).text
 
 
 def write_report(path: Path, text: str) -> None:
@@ -225,4 +229,4 @@ def write_report(path: Path, text: str) -> None:
         )
     except OSError as error:
         reason = error.strerror or str(error)
-        raise ReportWriteError(f"Failed to write report {path}: {reason}") from error
+        raise ReportWriteError(path, reason) from error

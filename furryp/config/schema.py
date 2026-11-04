@@ -43,12 +43,15 @@ JSON_INDENT = 2
 MISSING_KEY = 'missing key "{key}"'
 
 type Check = Callable[[Any], str | None]
+# An annotation as ``typing.get_type_hints`` gives it: a type, an alias, a union…
+type Hint = object
 
 
 class SchemaError(Exception):
     """Invalid value at a key path such as ``rules.function-too-long.max-lines``."""
 
     def __init__(self, path: str, problem: str) -> None:
+        """Prefix the problem with its key path, if any."""
         super().__init__(f"{path}: {problem}" if path else problem)
 
 
@@ -99,7 +102,7 @@ def parse_dataclass[T](cls: type[T], data: object, path: str, base: T | None) ->
 
 
 def _parse_field(
-    metadata: Mapping[str, Check], hint: Any, value: object, path: str, current: object
+    metadata: Mapping[str, Check], hint: Hint, value: object, path: str, current: object
 ) -> object:
     """Convert the JSON ``value`` of a field, then run its domain check."""
     parsed = parse_value(hint, value, path, current)
@@ -110,7 +113,7 @@ def _parse_field(
     return parsed
 
 
-def parse_value(hint: Any, value: object, path: str, current: object = None) -> object:
+def parse_value(hint: Hint, value: object, path: str, current: object = None) -> object:
     """Convert the JSON ``value`` to the annotation ``hint``."""
     origin = typing.get_origin(hint)
     if origin is Literal:
@@ -128,7 +131,7 @@ def parse_value(hint: Any, value: object, path: str, current: object = None) -> 
 
 def _parse_scalar(hint: type, value: object, path: str) -> object:
     """Convert a boolean, an integer (>= 0), a number or a string."""
-    if hint is float and type(value) in (int, float):
+    if hint is float and type(value) in {int, float}:
         return float(value)
     if type(value) is not hint:
         expected = EXPECTED_SCALARS[hint]
@@ -147,7 +150,7 @@ def _parse_literal(choices: tuple[object, ...], value: object, path: str) -> obj
     raise SchemaError(path, f"must be one of {allowed}, got {got}")
 
 
-def _parse_tuple(item_hint: Any, value: object, path: str) -> tuple[object, ...]:
+def _parse_tuple(item_hint: Hint, value: object, path: str) -> tuple[object, ...]:
     """Convert a JSON array to a tuple of ``item_hint``."""
     if not isinstance(value, list):
         raise SchemaError(path, f"expected an array, got {json_type_name(value)}")
@@ -157,7 +160,7 @@ def _parse_tuple(item_hint: Any, value: object, path: str) -> tuple[object, ...]
     )
 
 
-def _parse_dict(value_hint: Any, value: object, path: str) -> dict[str, object]:
+def _parse_dict(value_hint: Hint, value: object, path: str) -> dict[str, object]:
     """Convert a JSON object with free keys to a dict of ``value_hint``."""
     return {
         key: parse_value(value_hint, item, child_path(path, key))
@@ -165,7 +168,7 @@ def _parse_dict(value_hint: Any, value: object, path: str) -> dict[str, object]:
     }
 
 
-def _parse_union(members: tuple[Any, ...], value: object, path: str) -> object:
+def _parse_union(members: tuple[Hint, ...], value: object, path: str) -> object:
     """Convert ``value`` to a member of a union; if none accepts it, the error is that of the last member."""
     if all(dataclasses.is_dataclass(member) for member in members):
         return _parse_tagged(members, value, path)

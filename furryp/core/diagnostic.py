@@ -9,6 +9,14 @@ ELLIPSIS = "…"
 LINE_BREAKS = ("\n", "\r")
 
 
+class InvalidHelpError(ValueError):
+    """A help that is empty or on several lines: a defect of the rule."""
+
+    def __init__(self, code: str) -> None:
+        """Name the rule."""
+        super().__init__(f"{code}: help must be one non-empty line")
+
+
 @dataclass(frozen=True, slots=True, order=True)
 class Position:
     """1-indexed line and 1-indexed column, counted in characters."""
@@ -84,5 +92,5 @@ class Diagnostic:
     def __post_init__(self) -> None:
         """Refuse an empty or multi-line help; truncate a long one."""
         if not self.help.strip() or any(brk in self.help for brk in LINE_BREAKS):
-            raise ValueError(f"{self.code}: help must be one non-empty line")
+            raise InvalidHelpError(self.code)
         object.__setattr__(self, "help", fit_help(self.help))

@@ -16,10 +16,10 @@ UTF8 = "utf-8"
 
 
 def split_lines(text: str) -> tuple[str, ...]:
-    """Return the physical lines of ``text``, without their line breaks.
+    r"""Return the physical lines of ``text``, without their line breaks.
 
-    Only ``\\r\\n``, ``\\r`` and ``\\n`` end a line, unlike ``str.splitlines``
-    which also splits on ``\\f``, ``\\v``, ``\\x1c``… A final line break does
+    Only ``\r\n``, ``\r`` and ``\n`` end a line, unlike ``str.splitlines``
+    which also splits on ``\f``, ``\v``, ``\x1c``… A final line break does
     not start a new line.
     """
     if not text:
@@ -46,7 +46,7 @@ def split_lines_with_breaks(text: str) -> tuple[str, ...]:
 
 
 def first_line_break(text: str) -> str | None:
-    """Return the first line break of ``text`` (``\\r\\n``, ``\\r`` or ``\\n``)."""
+    r"""Return the first line break of ``text`` (``\r\n``, ``\r`` or ``\n``)."""
     match = LINE_BREAK.search(text)
     return None if match is None else match.group()
 

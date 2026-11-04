@@ -16,7 +16,7 @@ from furryp.config.loader import Configuration, load_configuration
 from furryp.config.options import file_filter
 from furryp.config.selection import CliSelection
 from furryp.core.discovery import DiscoveryResult, discover_files
-from furryp.core.errors import FileFailure, FurrypError, UsageError
+from furryp.core.errors import FileFailure, FurrypError, OptionConflictError
 from furryp.core.paths import display_path
 from furryp.core.registry import Registry
 from furryp.fix.diff import render_diff_footer, render_file_diff
@@ -46,7 +46,7 @@ FORBIDDEN_COMBINATIONS = (
     ("statistics", ("fix", "diff")),
     ("show_settings", ("fix", "diff", "statistics")),
 )
-DEFAULT_PATHS = (Path("."),)
+DEFAULT_PATHS = (Path(),)
 STREAM_ENCODING = "utf-8"
 STREAM_ERRORS = "replace"
 STREAM_NEWLINE = "\n"
@@ -63,15 +63,15 @@ def main(argv: Sequence[str] | None = None) -> int:
         return _dispatch(parser, parser.parse_args(argv))
     except FurrypError as error:
         _print_error(str(error))
-    except Exception as error:  # noqa: BLE001
+    except Exception as error:  # ruff: ignore[blind-except]
         _print_error(f"internal error: {type(error).__name__}: {error}")
     return ExitCode.ERROR
 
 
 def configure_streams() -> None:
-    """Write UTF-8 with ``\\n`` line ends on stdout and stderr (SPEC §5.7).
+    r"""Write UTF-8 with ``\n`` line ends on stdout and stderr (SPEC §5.7).
 
-    Without ``newline``, Windows would turn every ``\\n`` into ``\\r\\n``: the
+    Without ``newline``, Windows would turn every ``\n`` into ``\r\n``: the
     output is the same bytes on every platform, as ruff's.
     """
     for stream in (sys.stdout, sys.stderr):
@@ -101,7 +101,7 @@ def _dispatch(parser: argparse.ArgumentParser, args: argparse.Namespace) -> int:
     if args.command == "rule":
         run_rule(args, Path.cwd().resolve())
         return ExitCode.SUCCESS
-    parser.error("a command is required")
+    return parser.error("a command is required")
 
 
 def _flag(destination: str) -> str:
@@ -116,9 +116,7 @@ def check_combinations(args: argparse.Namespace) -> None:
             continue
         for conflict in conflicts:
             if getattr(args, conflict):
-                raise UsageError(
-                    f"{_flag(option)} cannot be used with {_flag(conflict)}"
-                )
+                raise OptionConflictError(_flag(option), _flag(conflict))
 
 
 def _cli_selection(args: argparse.Namespace) -> CliSelection:
@@ -149,7 +147,7 @@ def for_each_file[T](
     for path in paths:
         try:
             results.append(action(path))
-        except Exception as error:  # noqa: BLE001
+        except Exception as error:  # ruff: ignore[blind-except]
             reason = f"{type(error).__name__}: {error}"
             _print_error(f"Failed to check {display_path(path, cwd)}: {reason}")
             failures.append(FileFailure(path, reason))

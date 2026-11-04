@@ -36,7 +36,7 @@ class FurrypArgumentParser(argparse.ArgumentParser):
 
     def error(self, message: str) -> NoReturn:
         """Report a usage error as ``error: {message}`` followed by the usage."""
-        raise UsageError(f"{message}\n{self.format_usage().rstrip()}")
+        raise UsageError("\n".join((message, self.format_usage().rstrip())))
 
 
 def _new_parser(

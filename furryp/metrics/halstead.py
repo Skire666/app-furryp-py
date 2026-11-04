@@ -48,14 +48,14 @@ class Halstead:
 
     @property
     def volume(self) -> float:
-        """``N × log2(n)``, 0 if ``n <= 1``."""
+        """``N * log2(n)``, 0 if ``n <= 1``."""
         if self.vocabulary < MIN_VOCABULARY:
             return 0.0
         return self.length * math.log2(self.vocabulary)
 
     @property
     def difficulty(self) -> float:
-        """``(n1 / 2) × (N2 / n2)``, 0 if ``n2 = 0``."""
+        """``(n1 / 2) * (N2 / n2)``, 0 if ``n2 = 0``."""
         if not self.distinct_operands:
             return 0.0
         return (
@@ -64,7 +64,7 @@ class Halstead:
 
     @property
     def effort(self) -> float:
-        """``difficulty × volume``."""
+        """``difficulty * volume``."""
         return self.difficulty * self.volume
 
     @property

@@ -38,7 +38,7 @@ def path_matches(patterns: Iterable[str], relative: PurePosixPath) -> bool:
 
 @dataclass(frozen=True, slots=True)
 class FileFilter:
-    """``include`` and ``exclude`` patterns (``exclude`` ∪ ``extend-exclude``)."""
+    """``include`` and ``exclude`` patterns (``exclude`` plus ``extend-exclude``)."""
 
     include: tuple[str, ...]
     exclude: tuple[str, ...]
