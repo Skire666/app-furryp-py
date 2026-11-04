@@ -64,8 +64,7 @@ class _FunctionScope:
 def _function_scopes(tree: ast.Module) -> Iterator[_FunctionScope]:
     """Yield the functions of a module, in the order of the source.
 
-    The walk uses a stack: an ``elif`` chain can be deeper than the recursion
-    limit.
+    The walk uses a stack: an ``elif`` chain can be deeper than the recursion limit.
     """
     stack: list[tuple[ast.AST, str, bool, bool]] = [(tree, "", False, False)]
     while stack:

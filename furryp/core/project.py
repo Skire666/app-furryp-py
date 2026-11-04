@@ -4,8 +4,7 @@ The name of a file is its path relative to the first source root that holds it,
 in dotted notation: ``pkg/__init__.py`` is ``pkg``. Relative imports start from
 the package of the module, and one that goes above the top level names nothing.
 
-A pattern ``a.b`` matches ``a.b`` and the modules below it, but not ``a.bc``;
-``*`` stands for exactly one segment.
+A pattern ``a.b`` matches ``a.b`` and the modules below it, but not ``a.bc``; ``*`` stands for exactly one segment.
 
 As in ruff 0.17.3 (TID251), ``from X import y`` names the module ``X``, at the
 position of the statement, and the member ``X.y``, at the position of ``y``. A
@@ -134,8 +133,7 @@ def all_imports(tree: ast.Module, imports: ImportTable) -> Iterator[tuple[Import
 
     Each one comes with whether it is in the body of a ``TYPE_CHECKING`` block.
 
-    The walk uses a stack: an ``elif`` chain can be deeper than the recursion
-    limit.
+    The walk uses a stack: an ``elif`` chain can be deeper than the recursion limit.
     """
     stack: list[tuple[ast.AST, bool]] = [(tree, False)]
     while stack:

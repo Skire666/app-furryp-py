@@ -79,8 +79,7 @@ class Directive:
 def format_directive(kind: DirectiveKind, identifiers: Iterable[str]) -> str:
     """Return a directive in the compact format: ``# foqa:FUR101,FUR403`` (A22).
 
-    The file form is ``# furryp: foqa:FUR102``; the identifiers are written in
-    the given order.
+    The file form is ``# furryp: foqa:FUR102``; the identifiers are written in the given order.
     """
     return f"{DIRECTIVE_PREFIXES[kind]}:{COMPACT_SEPARATOR.join(identifiers)}"
 

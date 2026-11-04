@@ -67,8 +67,7 @@ class ImportTable:
     def resolve(self, node: ast.expr) -> str | None:
         """Return the dotted name of ``node``, its root replaced by its target.
 
-        ``None`` if ``node`` is not a chain of names; a root that is not
-        imported is kept as it is.
+        ``None`` if ``node`` is not a chain of names; a root that is not imported is kept as it is.
         """
         name = dotted_name(node)
         if name is None:

@@ -184,8 +184,7 @@ def _render_errors(errors: tuple[AnalysisError, ...]) -> Html:
 def _banner(errors: tuple[AnalysisError, ...]) -> Html:
     """Return the warning of the top of the page, if a file has no measures.
 
-    As SonarQube does: the analysis goes on, and what it could not read stays in
-    sight, with a link to the details.
+    As SonarQube does: the analysis goes on, and what it could not read stays in sight, with a link to the details.
     """
     if not errors:
         return Html("")

@@ -29,8 +29,7 @@ CHECK_KEY = "check"
 class RuleContext[O, M = object]:
     """What a rule sees of a file.
 
-    The source, the typed rule options, the names imported by the module, its
-    metrics and the project.
+    The source, the typed rule options, the names imported by the module, its metrics and the project.
 
     ``M`` is the type of the metrics, which live in a higher layer: a rule that
     reads them writes ``RuleContext[Options, FileMetrics]``.

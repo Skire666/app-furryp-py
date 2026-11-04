@@ -1,7 +1,6 @@
 """Rendering of ``--show-settings`` (SPEC §5.5).
 
-The JSON part lists every key, defaults included, and can be saved as is as
-a ``furryp.json`` file.
+The JSON part lists every key, defaults included, and can be saved as is as a ``furryp.json`` file.
 """
 
 from furryp.config.loader import Configuration

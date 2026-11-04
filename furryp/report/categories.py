@@ -95,8 +95,7 @@ class Category:
 class _Scope:
     """What a category reads.
 
-    The measured files, the codes of its rules, the options of the rules and the
-    rules that ran.
+    The measured files, the codes of its rules, the options of the rules and the rules that ran.
     """
 
     files: Sequence[FileSummary]

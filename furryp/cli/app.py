@@ -244,8 +244,7 @@ def report_files(
 ) -> int:
     """``--report-html``: write the report; nothing on stdout (SPEC §5.6).
 
-    The exit code is the one of ``check``: the whole selection counts, the files
-    left out of the aggregates included.
+    The exit code is the one of ``check``: the whole selection counts, the files left out of the aggregates included.
     """
     started = clock()
     action = partial(summarize_path, linter, cwd)

@@ -58,8 +58,7 @@ def docstring_of(node: ast.stmt) -> str | None:
 def statement_span(source: SourceFile, node: ast.stmt) -> Span:
     """Return the span of the first line of ``node``, from its first character.
 
-    The span ends with the statement if it fits on its line, else at the end
-    of its first line.
+    The span ends with the statement if it fits on its line, else at the end of its first line.
     """
     text = source.lines[node.lineno - 1]
     start = byte_to_char_column(text, node.col_offset) + 1

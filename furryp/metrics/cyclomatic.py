@@ -6,8 +6,7 @@ irrefutable one without guard, and a nested function, whose body counts too.
 ``else``, ``with``, ``finally``, boolean operators, ternaries, comprehensions
 and ``lambda`` add nothing, as they are not branching statements for ruff.
 
-One difference: a class defined in the function adds nothing, as it is measured
-on its own (SPEC FUR401).
+One difference: a class defined in the function adds nothing, as it is measured on its own (SPEC FUR401).
 
 The walks use a stack: an ``elif`` chain can be deeper than the recursion limit.
 """

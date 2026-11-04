@@ -98,8 +98,7 @@ def fix_path(linter: Linter, path: Path) -> FixResult:
 def write_source(source: SourceFile, text: str) -> None:
     """Write ``text`` over ``source`` in the encoding it was read with.
 
-    ``utf-8-sig`` restores the BOM; the line breaks of ``text`` are written as
-    they are, on every platform.
+    ``utf-8-sig`` restores the BOM; the line breaks of ``text`` are written as they are, on every platform.
     """
     source.path.write_bytes(text.encode(source.encoding))
 

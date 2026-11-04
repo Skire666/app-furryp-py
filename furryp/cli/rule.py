@@ -1,7 +1,6 @@
 """``furryp rule <CODE|NAME>`` and ``furryp rule --all`` (SPEC §4.6).
 
-The configuration is discovered as for ``check``, so that the documentation
-shows the effective option values.
+The configuration is discovered as for ``check``, so that the documentation shows the effective option values.
 """
 
 import argparse

@@ -53,8 +53,7 @@ class LogicalLines:
     def range_of(self, line: int) -> tuple[int, int]:
         """Return the first and last lines of the logical line of ``line``.
 
-        A line outside any logical line (comment or blank line between two
-        statements) is its own range.
+        A line outside any logical line (comment or blank line between two statements) is its own range.
         """
         position = bisect.bisect_right(self.ranges, line, key=_first_line) - 1
         if position >= 0 and self.ranges[position][1] >= line:

@@ -93,8 +93,7 @@ def render_total(remaining: int, fixed: int) -> str:
 def render_footer(diagnostics: Sequence[Diagnostic], fixed: int = 0) -> str:
     """Return the footer: total, then the number of fixable diagnostics.
 
-    After ``--fix``, ``diagnostics`` are the remaining ones and ``fixed`` the
-    number of fixes applied.
+    After ``--fix``, ``diagnostics`` are the remaining ones and ``fixed`` the number of fixes applied.
     """
     if not diagnostics and not fixed:
         return ALL_CHECKS_PASSED
@@ -108,8 +107,7 @@ def render_footer(diagnostics: Sequence[Diagnostic], fixed: int = 0) -> str:
 def render_check(entries: Sequence[Entry], fixed: int = 0) -> str:
     """Return the full output of ``furryp check`` for sorted ``entries``.
 
-    After ``--fix``, ``entries`` are the remaining diagnostics and ``fixed``
-    the number of fixes applied.
+    After ``--fix``, ``entries`` are the remaining diagnostics and ``fixed`` the number of fixes applied.
     """
     blocks = [render_entry(entry) for entry in entries]
     blocks.append(render_footer([entry.diagnostic for entry in entries], fixed))
