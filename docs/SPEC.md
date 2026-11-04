@@ -213,7 +213,7 @@ help: Remove unused `foqa` directive
 101 +     return path_browser
     |
 
-function-too-long [FUR101]: Function `get_args_for_stealth` has too many lines of code (31 > 25)
+function-too-long [FUR101]: Function `get_args_for_stealth` has too many lines of code (31 > 26)
    --> __src__\services\browser_playwright_service.py:114:9
     |
 112 |             self._wire_page_crash_listener(page)
@@ -384,7 +384,7 @@ CLI > `furryp.json` > valeurs par défaut du code. Un objet partiel dans `rules`
 
 ### 8.4 Référence complète (valeurs par défaut)
 
-Les seuils s'inspirent de la bibliothèque standard de CPython 3.14 (fichiers ≤ 1200 lignes, fonctions ≤ 25 lignes de code). Sur cette bibliothèque, ils signalent entre 1 et 14 % des cas selon la règle, et moins de 0,1 % pour `demeter-chain` (A74).
+Les seuils sont à titre indicatif.
 
 ```json
 {
@@ -398,15 +398,15 @@ Les seuils s'inspirent de la bibliothèque standard de CPython 3.14 (fichiers �
   "per-file-ignores": {},
   "rules": {
     "unused-foqa": {},
-    "function-too-long": { "max-lines": 25 },
-    "file-too-long": { "max-lines": 1200 },
-    "halstead-file": { "metric": "volume", "max": 40000 },
-    "halstead-function": { "metric": "volume", "max": 1000 },
-    "cognitive-complexity": { "max": 20 },
-    "too-complex-class": { "max-class-complexity": 70 },
+    "function-too-long": { "max-lines": 26 },
+    "file-too-long": { "max-lines": 1000 },
+    "halstead-file": { "metric": "volume", "max": 15000 },
+    "halstead-function": { "metric": "volume", "max": 1200 },
+    "cognitive-complexity": { "max": 16 },
+    "too-complex-class": { "max-class-complexity": 80 },
     "layer-violation": { "source-roots": ["."], "include-type-checking": true, "contracts": [] },
     "demeter-chain": { "max-depth": 3, "ignore-roots": ["self", "cls"], "ignore-imported-modules": true, "count-calls": false },
-    "too-many-instance-attributes": { "max-instance-attributes": 14 }
+    "too-many-instance-attributes": { "max-instance-attributes": 20 }
   },
   "report": { "top-n": 10, "title": "furryp — audit", "rating-thresholds": [0.20, 0.40, 0.60, 0.80] }
 }
@@ -460,24 +460,28 @@ Cette arborescence est indicative : elle peut être affinée si un fichier dépa
 
 ```python
 @dataclass(frozen=True, slots=True)
-class Position:      # 1-indexé, colonne en caractères
+class Position:  # 1-indexé, colonne en caractères
     line: int
     column: int
+
 
 @dataclass(frozen=True, slots=True)
 class Span:
     start: Position
     end: Position
 
+
 @dataclass(frozen=True, slots=True)
 class Edit:
-    start: int       # index de caractère dans le texte
+    start: int  # index de caractère dans le texte
     end: int
     content: str
 
+
 @dataclass(frozen=True, slots=True)
-class Fix:           # toujours sûre (§7.1)
+class Fix:  # toujours sûre (§7.1)
     edits: tuple[Edit, ...]
+
 
 @dataclass(frozen=True, slots=True)
 class Diagnostic:
@@ -486,7 +490,7 @@ class Diagnostic:
     message: str
     path: Path
     span: Span
-    help: str        # obligatoire et non vide (§11.0)
+    help: str  # obligatoire et non vide (§11.0)
     fix: Fix | None
 ```
 
@@ -628,7 +632,7 @@ Chaque fiche ci-dessous donne le gabarit exact de son `help:`.
 
 - **Mesure** : nombre de lignes de code (§10.1) de la ligne du premier statement du corps jusqu'à `end_lineno`. Signature, décorateurs, commentaires, lignes vides et docstring exclus. Une fonction sur une ligne (`def f(): return 1`) compte 1.
 - **Portée** : toutes les fonctions. Les lignes d'une fonction imbriquée comptent dans son parent, **et** la fonction imbriquée est évaluée seule.
-- **Options** : `max-lines: int = 25`.
+- **Options** : `max-lines: int = 26`.
 - **Position** : span du nom.
 - **Message** : ``Function `{name}` has too many lines of code ({count} > {max})``, avec le nom qualifié (§10.2).
 - **Aide** : ``Long functions are hard to read and test; consider splitting this one``.
@@ -639,15 +643,14 @@ Chaque fiche ci-dessous donne le gabarit exact de son `help:`.
       # commentaire
       y = x + 1
 
-      z = call(
-          y)
+      z = call(y)
       return z
   ```
 
 ### FUR102 · file-too-long
 
 - **Mesure** : nombre total de lignes physiques (§10.1), tout compris.
-- **Options** : `max-lines: int = 1200`.
+- **Options** : `max-lines: int = 1000`.
 - **Position** : début de la première ligne au-delà de la limite (ligne `max + 1`), soulignée sur toute sa longueur.
 - **Message** : `File has too many lines ({count} > {max})`
 - **Aide** : ``Long files are hard to navigate; consider splitting this one into smaller modules``.
@@ -661,7 +664,7 @@ Chaque fiche ci-dessous donne le gabarit exact de son `help:`.
   - Distincts : par texte exact du token.
 - **Formules** : `n1, n2` (distincts), `N1, N2` (totaux) ; `n = n1 + n2` ; `N = N1 + N2` ; `volume = N × log2(n)` (0 si `n ≤ 1`) ; `difficulty = (n1 / 2) × (N2 / n2)` (0 si `n2 = 0`) ; `effort = difficulty × volume` ; `bugs = volume / 3000`.
 - **Portée** : FUR201 = tous les tokens du fichier (ce n'est pas la somme des fonctions). FUR202 = tokens de la fonction, du mot-clé `def` (ou `async`) jusqu'à la fin de la fonction, signature et fonctions imbriquées comprises, décorateurs exclus.
-- **Options** : FUR201 `metric = "volume"`, `max = 40000` ; FUR202 `metric = "volume"`, `max = 1000`.
+- **Options** : FUR201 `metric = "volume"`, `max = 15000` ; FUR202 `metric = "volume"`, `max = 1200`.
 - **Position** : FUR201 → tout le fichier : 1:1, sans extrait (§5.1) ; FUR202 → span du nom.
 - **Messages** : `Halstead {metric} of the file is too high ({value:.1f} > {max})` ; ``Halstead {metric} of function `{name}` is too high ({value:.1f} > {max})``, avec le nom qualifié (§10.2).
 - **Aide FUR201** : `This file does a lot; consider splitting it or simplifying it`.
@@ -687,7 +690,7 @@ Adaptation à Python de la spécification inspiré SonarSource (G. Ann Campbell)
 - **Ne comptent pas** (liste fermée : tout ce qui n'est pas listé ci-dessus vaut 0) : par exemple `raise`, `yield`, `await`, `del`, les affectations, les appels. Les annotations de la signature d'une fonction imbriquée valent 0, quel que soit leur contenu : le `def` ne les évalue pas.
 - Distinguer `elif` d'un `else:` contenant un `if` : le `If` présent dans `orelse` est un `elif` si sa ligne source commence (après indentation) par `elif`.
 - **Contributions** : chaque incrément est enregistré avec sa construction (`if`, `elif`, `else`, `for`, `while`, `except`, `match`, `ternary`, `boolean sequence`, `case guard`, `comprehension if`, `recursion`, `try`, `finally`, `with`, `break`, `continue`, `return`, `assert`, `pass`, `walrus`), sa ligne et ses points. C'est le détail du calcul, que l'aide ne cite pas.
-- **Options** : `max: int = 20` (sur `Lib` de Python 3.14, 1,62 % des fonctions non imbriquées le dépassent avec `Lib/test`, et 3,92 % sans, A74).
+- **Options** : `max: int = 16` (sur `Lib` de Python 3.14, 2,39 % des fonctions non imbriquées le dépassent avec `Lib/test`, et 5,46 % sans, A77).
 - **Position** : span du nom. **Message** : ``Cognitive complexity of function `{name}` is too high ({value} > {max})``, avec le nom qualifié (§10.2).
 - **Aide** : `Branches and nesting make this function hard to follow; consider simplifying its control flow`.
 
@@ -704,6 +707,7 @@ def sum_of_primes(limit):
             total += i
     return total
 
+
 def classify(items, strict):
     result = []
     for item in items:
@@ -712,6 +716,7 @@ def classify(items, strict):
         elif item.retry:
             result.append(item if strict else None)
     return [r for r in result if r]
+
 
 def route(event):
     match event:
@@ -736,7 +741,7 @@ Une classe est trop complexe quand les complexités de ses méthodes dépassent 
 - **Mesure** : somme des complexités cyclomatiques de ses **méthodes** : toutes les fonctions du corps de la classe, à toute profondeur de ses blocs (`if`, `try`, `with`, `for`, `while`, `match`), `@staticmethod`, dunders et propriétés compris. Aucun code ne passe sous silence, et FUR404 emploie la même définition (A55).
 - **Complexité d'une fonction** : comme C901 de ruff 0.17.3 (A52, comparé sur toute `Lib`). 1, plus 1 pour chaque `if`, `elif`, `for`, `while`, `except`, `else` d'un `try`, `case` (sauf un dernier `case` irréfutable sans garde) et fonction imbriquée, dont le corps compte pour sa méthode. `else`, `with`, `finally`, `assert`, opérateurs booléens, ternaires, compréhensions et `lambda` n'ajoutent rien.
 - **Classe imbriquée** : mesurée à part, dans une classe comme dans une méthode. C'est le seul écart avec C901, qui la compte dans la fonction.
-- **Option** : `max-class-complexity = 70`.
+- **Option** : `max-class-complexity = 80`.
 - **Classes non mesurées** :
   - **classes de test** : une base dont le nom finit par `TestCase` (`unittest.TestCase`, `IsolatedAsyncioTestCase`…), ou une classe nommée `Test`, `Test` + majuscule, chiffre ou `_`, sans `__init__` (celles que pytest collecte) ;
   - **classes de dispatch** : au moins 5 méthodes, chaque `def` comptant pour une (A55), dont au moins la moitié partagent un même préfixe parmi `visit_`, `do_`, `handle_`, `on_`.
@@ -780,7 +785,7 @@ Une classe a trop d'attributs quand elle affecte plus de `max-instance-attribute
 
 - **Mesure** : nombre de noms distincts affectés sur le premier paramètre (`self.x = …`, `self.x += …`, `self.x: T = …`, dépaquetage, `for self.x in …`, `with … as self.x`), dans toutes les méthodes de la classe (même définition que FUR401, A55), fonctions imbriquées et `lambda` comprises. Une fonction imbriquée ou un `lambda` qui redéfinit le nom du premier paramètre travaille sur un autre objet.
 - **Ne comptent pas** : les attributs de classe, ceux des classes parentes, et les noms affectés par une méthode sans instance (`@classmethod`, `@staticmethod`, `abc.abstractclassmethod`, `abc.abstractstaticmethod`, `__new__`, `__init_subclass__`, `__class_getitem__`). `self.x: T` sans valeur n'affecte rien.
-- **Option** : `max-instance-attributes = 14`.
+- **Option** : `max-instance-attributes = 20`.
 - **Classes non mesurées** :
   - **classes de test** (voir FUR401) ;
   - **données déclarées**, reconnues par un décorateur ou une base directe : `dataclasses.dataclass`, `pydantic.dataclasses.dataclass`, `attr.s`, `attr.attrs`, `attr.attributes`, `attr.define`, `attr.frozen`, `attr.mutable`, `attrs.define`, `attrs.frozen`, `attrs.mutable` (attrs comme RUF008 de ruff 0.17.3) ; `pydantic.BaseModel`, `pydantic.BaseSettings`, `pydantic_settings.BaseSettings`, `NamedTuple` (`typing`, `typing_extensions`, `collections.namedtuple(…)`), `TypedDict` (`typing`, `typing_extensions`) et les enums (`enum.Enum`, `enum.IntEnum`, `enum.StrEnum`, `enum.Flag`, `enum.IntFlag`) ;
@@ -946,3 +951,4 @@ Chaque arbitrage peut être changé ; il faut alors mettre à jour la section co
 | A74 | **Validé.** Seuils de la phase 8, décision de l'utilisateur : aucune valeur ne change, et les phrases qui annonçaient 1 à 5 % sont corrigées. Part signalée sur `Lib` de Python 3.14.8 sans `test`, puis 3.14.3 avec et sans `test` : FUR203 4,25 / 1,62 / 3,92 % ; FUR401 3,21 / 1,00 / 3,06 % ; FUR404 2,81 / 1,20 / 2,70 % ; FUR202 5,69 / 5,70 / 5,56 % ; FUR101 6,61 / 6,10 / 6,39 % ; FUR102 9,16 / 11,35 / 8,47 % ; FUR201 9,31 / 13,57 / 8,33 % ; FUR403 0,01 / 0,03 / 0,01 %. | 8.4, FUR203, FUR401, FUR404 |
 | A75 | **Validé.** Aides de FUR201 et FUR202, décision de l'utilisateur : `does a lot` remplace `holds a lot of logic`, trompeur sur du code d'interface (complexité cognitive médiane de 1 sur les 74 alertes de FUR202 d'aspirabot). La signature reste comptée dans FUR202 : plus simple à expliquer, alors que 28 de ces 74 alertes passeraient sans elle. Le nombre de paramètres relève de PLR0913 de ruff. | FUR201, FUR202 |
 | A76 | **Validé.** FUR001 et `--add-foqa` comme ruff 0.17.3, trouvé par la revue de phase 8, recommandation suivie par l'utilisateur. **Directive de fichier d'abord** : elle supprime le diagnostic, et une directive de ligne qui le couvre aussi est signalée comme inutile. **`# furryp: foqa` global** : il exempte tout son fichier de FUR001, directives de ligne comprises. **Dernière ligne sans fin de ligne** : `--add-foqa` lui en ajoute une s'il la modifie. **À savoir** : un `# furryp: foqa` devenu inutile n'est plus signalé et continue de tout masquer dans son fichier ; `--add-foqa` n'en écrit jamais, et les violations restent comptées dans la colonne « Suppressed » du rapport. **Différences restantes** : une directive qui nomme FUR001 ne la supprime pas, alors que ruff accepte `# noqa: RUF100` (A32) ; un fichier sans aucune fin de ligne reçoit `\n` sur toutes les plateformes, alors que ruff écrit celle du système (`\r\n` sous Windows). | 6, 6.1, FUR001 |
+| A77 | **Validé.** Seuils par défaut, décision de l'utilisateur, qui remplacent ceux d'A74 : `function-too-long` 26 (au lieu de 25), `file-too-long` 1000 (1200), `halstead-file` 15000 (40000), `halstead-function` 1200 (1000), `cognitive-complexity` 16 (20), `too-complex-class` 80 (70), `too-many-instance-attributes` 20 (14).

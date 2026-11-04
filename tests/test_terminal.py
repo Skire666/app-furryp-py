@@ -101,7 +101,7 @@ class ReferenceSnapshotTest(TempDirTestCase):
         too_long = Diagnostic(
             "FUR101",
             "function-too-long",
-            "Function `get_args_for_stealth` has too many lines of code (31 > 25)",
+            "Function `get_args_for_stealth` has too many lines of code (31 > 26)",
             service,
             line_span(114, 9, 29),
             "Long functions are hard to read and test; consider splitting this one",

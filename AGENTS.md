@@ -2,15 +2,12 @@
 
 Linter Python local inspiré de ruff. Python 3.14, bibliothèque standard uniquement.
 La spécification normative est `SPEC.md` : lis les sections citées par le prompt de phase (inutile de tout relire à chaque fois).
-L'état d'avancement est importé ci-dessous :
-
-@PROGRESS.md
 
 ## Règles d'or
 
 - `SPEC.md` fait foi. En cas d'ambiguïté, ou si elle diverge de ruff : **vérifie d'abord le comportement réel de ruff** (`uvx ruff`, version notée), qui a la priorité (A39) ; si ruff n'a pas d'équivalent, **pose la question** au lieu d'inventer.
 - **Le but reste une bonne qualimétrie** : aligné sur ruff, furryp doit rester productif. Avant de retenir un choix, mesure son effet réel (par exemple sur la bibliothèque standard) ; si un choix, même validé ou venant de ruff, nuit à la qualité des mesures, signale-le chiffres à l'appui au lieu de l'appliquer sans rien dire.
-- Trace toujours l'arbitrage et l'écart, y compris un écart avec ruff que j'ai décidé : l'arbitrage dans `PROGRESS.md` (section « Décisions »), tout écart volontaire dans sa section « Écarts », le signalement dans ton résumé, et une proposition de report dans `SPEC.md` (§15).
+- Trace toujours l'arbitrage et l'écart, y compris un écart avec ruff que j'ai décidé : tout écart volontaire dans sa section « Écarts », le signalement dans ton résumé, et une proposition de report dans `SPEC.md` (§15).
 - **Une phase à la fois** : n'implémente rien qui relève d'une phase ultérieure (`SPEC.md` §14).
 - **Aucune dépendance tierce**, ni à l'exécution ni pour les tests (`unittest` uniquement). N'installe rien.
 - Ne modifie jamais `SPEC.md`, `AGENTS.md`, `CLAUDE.md`, `PROMPTS.md` ni `README.md` (guide utilisateur, décrit le comportement attendu) sans demande explicite.
@@ -25,9 +22,9 @@ Chaque module de `furryp/` respecte les règles qu'il implémente :
 3. Les constantes sont en MAJUSCULES. Une valeur qui dépend d'une fonction ou d'une classe du même module (table de correspondance, instance par défaut) se place juste après ce dont elle dépend.
 4. `if __name__ == "__main__":` en dernier.
 5. La mise en forme relève de `ruff format` : lignes vides, fin de fichier, espaces en fin de ligne.
-6. Fonctions ≤ 25 lignes de code, complexité cognitive ≤ 20. Fichiers ≤ 1200 lignes (vise moins de 600).
+6. Fonctions ≤ 26 lignes de code, complexité cognitive ≤ 16. Fichiers ≤ 1000 lignes (vise moins de 600).
 7. Chaînes d'attributs de profondeur 3 au plus (`node.value.func` oui, `node.value.func.attr.x` non) : ajoute des accesseurs dans `furryp/core/ast_utils.py`.
-8. Classes : complexité ≤ 70, attributs d'instance ≤ 14. Objets valeur en `@dataclass(frozen=True, slots=True)`.
+8. Classes : complexité ≤ 80, attributs d'instance ≤ 20. Objets valeur en `@dataclass(frozen=True, slots=True)`.
 9. Couches, du haut vers le bas : `cli` → (`output` | `report` | `fix`) → `lint` → `config` → `rules` → `metrics` → `core`. Jamais d'import vers une couche plus haute.
 10. HTML et CSS uniquement dans `furryp/report/templates/`, jamais dans du code Python.
 11. Python 3.14 : `ast.Constant` uniquement (`ast.Num` / `ast.Str` n'existent plus) ; `col_offset` est en octets UTF-8, à convertir via `furryp/core/positions.py` ; pas de `from __future__ import annotations`.
@@ -48,5 +45,4 @@ Chaque module de `furryp/` respecte les règles qu'il implémente :
 ## Fin de phase (obligatoire)
 
 1. Tests verts et dogfooding vert pour les règles déjà implémentées ; aides et fiches des règles livrées présentes.
-2. `PROGRESS.md` à jour : phase cochée, fichiers créés, décisions prises, écarts, questions ouvertes.
-3. Un résumé de 10 lignes maximum, puis arrête-toi : n'enchaîne pas sur la phase suivante.
+2. Un résumé de 10 lignes maximum, puis arrête-toi : n'enchaîne pas sur la phase suivante.

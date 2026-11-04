@@ -144,7 +144,7 @@ class RuleDocTest(unittest.TestCase):
         settings = make_settings({"rules": {"file-too-long": {"max-lines": 30}}})
         self.assertIn(
             "## Options (furryp.json → rules.file-too-long)\n\n"
-            "- max-lines = 30 (default: 1200)\n\n## How to fix it well",
+            "- max-lines = 30 (default: 1000)\n\n## How to fix it well",
             render_rule(by_code["FUR102"], settings),
         )
         self.assertIn(
@@ -173,14 +173,14 @@ class RuleCommandTest(TempDirTestCase):
                 result = run_furryp(["rule", identifier], self.root)
                 self.assertEqual((result.returncode, result.stderr), (0, ""))
                 self.assertTrue(result.stdout.startswith("# file-too-long (FUR102)\n"))
-                self.assertIn("- max-lines = 30 (default: 1200)\n", result.stdout)
+                self.assertIn("- max-lines = 30 (default: 1000)\n", result.stdout)
 
     def test_explicit_config(self) -> None:
         write_files(
             self.root, {"other.json": '{"rules": {"file-too-long": {"max-lines": 7}}}'}
         )
         result = run_furryp(["rule", "FUR102", "--config", "other.json"], self.root)
-        self.assertIn("- max-lines = 7 (default: 1200)\n", result.stdout)
+        self.assertIn("- max-lines = 7 (default: 1000)\n", result.stdout)
 
     def test_all(self) -> None:
         result = run_furryp(["rule", "--all"], self.root)

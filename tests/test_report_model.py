@@ -226,7 +226,7 @@ class AggregatesTest(unittest.TestCase):
                 "b.py",
                 lines=20,
                 code_lines=8,
-                functions=[function(code_lines=26), function(code_lines=25)],
+                functions=[function(code_lines=27), function(code_lines=26)],
             ),
         ]
         aggregates = category("size", files).aggregates
@@ -234,7 +234,7 @@ class AggregatesTest(unittest.TestCase):
         self.assertEqual(aggregates["code_lines_mean"], 6.0)
         self.assertEqual(aggregates["function_lines_max"], 30)
         self.assertEqual(aggregates["functions_over"], 2)
-        self.assertEqual(aggregates["function_limit"], 25)
+        self.assertEqual(aggregates["function_limit"], 26)
 
     def test_a_nested_function_counts_alone_for_size_and_halstead(self) -> None:
         """A13: evaluated alone by FUR101 and FUR202, in its parent for FUR203."""
@@ -278,7 +278,7 @@ class AggregatesTest(unittest.TestCase):
         self.assertEqual(design["attributes_over"], Share(1, 1))
 
     def test_a_value_at_the_limit_is_not_above_it(self) -> None:
-        file = summary(functions=[function(code_lines=25, cognitive=20)])
+        file = summary(functions=[function(code_lines=26, cognitive=16)])
         self.assertEqual(category("size", [file]).aggregates["functions_over"], 0)
         self.assertEqual(category("complexity", [file]).aggregates["functions_over"], 0)
 
@@ -431,15 +431,15 @@ class AggregatesTest(unittest.TestCase):
 
     def test_design_sees_the_same_classes_as_the_rules(self) -> None:
         classes = [
-            class_measures("Plain", complexity=80, attributes=20),
+            class_measures("Plain", complexity=90, attributes=30),
             class_measures("Tests", complexity=500, attributes=500, is_test=True),
             class_measures("Visitor", complexity=400, attributes=2, is_dispatch=True),
             class_measures("Record", complexity=2, attributes=300, is_data=True),
         ]
         aggregates = category("design", [summary(classes=classes)]).aggregates
         self.assertEqual(aggregates["classes"], 4)
-        self.assertEqual(aggregates["complexity_max"], 80)
-        self.assertEqual(aggregates["attributes_max"], 20)
+        self.assertEqual(aggregates["complexity_max"], 90)
+        self.assertEqual(aggregates["attributes_max"], 30)
         self.assertEqual(aggregates["complexity_over"], Share(1, 2))
         self.assertEqual(aggregates["attributes_over"], Share(1, 2))
 

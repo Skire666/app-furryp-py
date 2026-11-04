@@ -184,7 +184,7 @@ class MeasuresTablesTest(unittest.TestCase):
         )
         self.assertEqual(rows["Lines of code per file"]["Total"], "120")
         self.assertEqual(rows["Lines of code per function"]["Max"], "900")
-        self.assertEqual(rows["Functions over 25 lines of code"]["Total"], "3")
+        self.assertEqual(rows["Functions over 26 lines of code"]["Total"], "3")
 
     def test_complexity(self) -> None:
         rows = measures(self.text, "complexity")
@@ -193,7 +193,7 @@ class MeasuresTablesTest(unittest.TestCase):
             (row["Mean"], row["Median"], row["Max"], row["Total"]),
             ("4,000.00", "2,000.00", "9,000", "12,000"),
         )
-        self.assertEqual(rows["Functions over a complexity of 20"]["Total"], "3")
+        self.assertEqual(rows["Functions over a complexity of 16"]["Total"], "3")
 
     def test_halstead(self) -> None:
         rows = measures(self.text, "halstead")
@@ -256,20 +256,20 @@ class DesignColumnsTest(unittest.TestCase):
         self.assertEqual(rows["Attribute chains too deep"]["Total"], "7")
 
     def test_each_share_of_classes_has_its_own_limit(self) -> None:
-        classes = [class_measures(complexity=80), class_measures(attributes=20)]
+        classes = [class_measures(complexity=90), class_measures(attributes=30)]
         extra = [class_measures(), class_measures()]
         text = render_report(model_of([summary(classes=classes + extra[:1])]))
         rows = measures(text, "design")
         self.assertEqual(
-            rows["Classes over a complexity of 70"]["Total"], "33.3% (1/3)"
+            rows["Classes over a complexity of 80"]["Total"], "33.3% (1/3)"
         )
         self.assertEqual(
-            rows["Classes over 14 instance attributes"]["Total"], "33.3% (1/3)"
+            rows["Classes over 20 instance attributes"]["Total"], "33.3% (1/3)"
         )
         text = render_report(model_of([summary(classes=[classes[0]])]))
         rows = measures(text, "design")
         self.assertEqual(
-            rows["Classes over 14 instance attributes"]["Total"], "0.0% (0/1)"
+            rows["Classes over 20 instance attributes"]["Total"], "0.0% (0/1)"
         )
 
 
@@ -494,17 +494,17 @@ class FiguresOfRulesThatDidNotRunTest(unittest.TestCase):
         """A measure does not come from the rule: it is computed for every file."""
         file = summary(
             functions=[function(code_lines=30)],
-            classes=[class_measures(complexity=80, attributes=20)],
+            classes=[class_measures(complexity=90, attributes=30)],
         )
         text = render_report(model_of([file], {"select": ["FUR102"]}))
         self.assertEqual(
-            measures(text, "size")["Functions over 25 lines of code"]["Total"], "1"
+            measures(text, "size")["Functions over 26 lines of code"]["Total"], "1"
         )
         design = measures(text, "design")
         self.assertEqual(design["Classes"]["Total"], "1")
-        self.assertEqual(design["Class complexity"]["Max"], "80")
+        self.assertEqual(design["Class complexity"]["Max"], "90")
         self.assertEqual(
-            design["Classes over a complexity of 70"]["Total"], "100.0% (1/1)"
+            design["Classes over a complexity of 80"]["Total"], "100.0% (1/1)"
         )
 
 

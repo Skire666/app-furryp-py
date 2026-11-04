@@ -180,9 +180,9 @@ class HalsteadFileTest(unittest.TestCase):
     def test_default_limit(self) -> None:
         settings = make_settings({"select": ["FUR201"]})
         self.assertEqual(codes_at(lint_text("x = 1\n", settings)), [])
-        names = "".join(f"x{index} = {index}\n" for index in range(1000))
+        names = "".join(f"x{index} = {index}\n" for index in range(500))
         self.assertEqual(codes_at(lint_text(names, settings)), [])
-        names = "".join(f"x{index} = {index}\n" for index in range(1800))
+        names = "".join(f"x{index} = {index}\n" for index in range(510))
         self.assertEqual(codes_at(lint_text(names, settings)), ["1:1 FUR201"])
 
 
@@ -239,7 +239,7 @@ class HalsteadFunctionTest(unittest.TestCase):
         settings = make_settings({"select": ["FUR202"]})
         small = "def f(a):\n    return a\n"
         self.assertEqual(codes_at(lint_text(small, settings)), [])
-        body = "".join(f"    x{index} = {index}\n" for index in range(50))
+        body = "".join(f"    x{index} = {index}\n" for index in range(58))
         self.assertEqual(
             codes_at(lint_text(f"def f():\n{body}", settings)), ["1:5 FUR202"]
         )

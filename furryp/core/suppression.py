@@ -133,7 +133,9 @@ def _ends_word(text: str, position: int) -> bool:
     return not following or following.isspace() or following == COMMENT_START
 
 
-def _parse_rule_list(text: str, position: int, registry: Registry) -> _RuleList:  # foqa:FUR203
+def _parse_rule_list(
+    text: str, position: int, registry: Registry
+) -> _RuleList:  # foqa:FUR203
     """Read the identifiers after the colon, separated by commas or blanks.
 
     The list stops at the first word that is not an identifier: the rest of the

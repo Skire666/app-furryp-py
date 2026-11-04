@@ -186,7 +186,7 @@ class TooComplexClassTest(unittest.TestCase):
         self.assertEqual(len(too_complex(f"class C:\n{METHODS}", 2)), 1)
 
     def test_default_maximum(self) -> None:
-        methods = "".join(f"    def m{i}(self): pass\n" for i in range(70))
+        methods = "".join(f"    def m{i}(self): pass\n" for i in range(80))
         settings = make_settings()
         codes = [
             d.code for d in lint_text(f"class C:\n{methods}", settings).diagnostics
@@ -194,7 +194,7 @@ class TooComplexClassTest(unittest.TestCase):
         self.assertNotIn("FUR401", codes)
         more = f"class C:\n{methods}    def extra(self): pass\n"
         found = [d for d in lint_text(more, settings).diagnostics if d.code == "FUR401"]
-        self.assertEqual(found[0].message, "Class `C` is too complex (71 > 70)")
+        self.assertEqual(found[0].message, "Class `C` is too complex (81 > 80)")
 
     def test_a_decorated_class_points_at_its_name(self) -> None:
         span = too_complex(f"@deco\nclass C:\n{METHODS}")[0].span
@@ -449,7 +449,7 @@ class TooManyInstanceAttributesTest(unittest.TestCase):
         self.assertEqual(len(too_many(f"class C:\n{ATTRIBUTES}", 1)), 1)
 
     def test_default_maximum(self) -> None:
-        attributes = "".join(f"        self.a{i} = 1\n" for i in range(14))
+        attributes = "".join(f"        self.a{i} = 1\n" for i in range(20))
         text = f"class C:\n    def run(self):\n{attributes}"
         settings = make_settings()
         codes = [d.code for d in lint_text(text, settings).diagnostics]
@@ -457,7 +457,7 @@ class TooManyInstanceAttributesTest(unittest.TestCase):
         more = text + "        self.extra = 1\n"
         found = [d for d in lint_text(more, settings).diagnostics if d.code == "FUR404"]
         self.assertEqual(
-            found[0].message, "Class `C` has too many attributes (15 > 14)"
+            found[0].message, "Class `C` has too many attributes (21 > 20)"
         )
 
     def test_known_data_classes_are_not_measured(self) -> None:

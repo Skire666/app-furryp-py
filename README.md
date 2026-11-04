@@ -51,7 +51,7 @@ furryp check --report-html audit.html   # rapport d'audit, rien sur le terminal
 ## 3. Lire la sortie
 
 ```
-function-too-long [FUR101]: Function `load_config` has too many lines of code (31 > 25)
+function-too-long [FUR101]: Function `load_config` has too many lines of code (31 > 26)
   --> src\app\config.py:42:5
    |
 41 | @cache
@@ -65,7 +65,7 @@ help: Long functions are hard to read and test; consider splitting this one
 Found 1 error.
 ```
 
-- **1re ligne** : `nom-de-la-règle [CODE]: message`. Dans une règle de mesure, le message se termine par la **valeur mesurée** et le **seuil** : `(31 > 25)`. `[*]` après le code signale une correction automatique disponible.
+- **1re ligne** : `nom-de-la-règle [CODE]: message`. Dans une règle de mesure, le message se termine par la **valeur mesurée** et le **seuil** : `(31 > 26)`. `[*]` après le code signale une correction automatique disponible.
 - **`-->`** : `fichier:ligne:colonne` (cliquable dans VS Code).
 - **Extrait** : la portion de code en erreur, soulignée comme par ruff, avec jusqu'à 2 lignes de contexte. Une erreur qui vise tout le fichier n'a pas d'extrait.
 - **`help:`** : toujours présent : une phrase simple sur le problème, qui vous laisse le choix de la solution. Le détail de chaque règle est dans `furryp rule <code>`. Si une correction automatique existe, son diff s'affiche juste dessous (`-` retiré, `+` ajouté), comme dans ruff.
@@ -94,17 +94,17 @@ Chaque fiche explique ce qui est mesuré, pourquoi, les options (avec les valeur
 |---|---|---|---|---|
 | FUR000 | `invalid-syntax` | Fichier illisible ou syntaxe invalide (non désactivable) | — | non |
 | FUR001 | `unused-foqa` | Directive `foqa` inutile, de règle non activée ou en double | — | **oui** |
-| FUR101 | `function-too-long` | Lignes de code d'une fonction (hors vides, commentaires, docstring) | 25 | non |
-| FUR102 | `file-too-long` | Lignes totales du fichier | 1200 | non |
-| FUR201 | `halstead-file` | Volume Halstead du fichier | 40000 | non |
-| FUR202 | `halstead-function` | Volume Halstead d'une fonction | 1000 | non |
-| FUR203 | `cognitive-complexity` | Complexité cognitive d'une fonction | 20 | non |
-| FUR401 | `too-complex-class` | Somme des complexités des méthodes d'une classe | 70 | non |
+| FUR101 | `function-too-long` | Lignes de code d'une fonction (hors vides, commentaires, docstring) | 26 | non |
+| FUR102 | `file-too-long` | Lignes totales du fichier | 1000 | non |
+| FUR201 | `halstead-file` | Volume Halstead du fichier | 15000 | non |
+| FUR202 | `halstead-function` | Volume Halstead d'une fonction | 1200 | non |
+| FUR203 | `cognitive-complexity` | Complexité cognitive d'une fonction | 16 | non |
+| FUR401 | `too-complex-class` | Somme des complexités des méthodes d'une classe | 80 | non |
 | FUR402 | `layer-violation` | Import interdit par un contrat de couches | contrats à définir | non |
 | FUR403 | `demeter-chain` | Profondeur d'une chaîne `a.b.c.d` | 3 | non |
-| FUR404 | `too-many-instance-attributes` | Nombre d'attributs d'instance d'une classe | 14 | non |
+| FUR404 | `too-many-instance-attributes` | Nombre d'attributs d'instance d'une classe | 20 | non |
 
-Les seuils s'inspirent de la bibliothèque standard de Python 3.14, où ils signalent entre 1 et 14 % des cas selon la règle (bien moins pour `demeter-chain`). Ajustez-les à votre projet (section 5). La seule correction automatique, le retrait d'une directive inutile, est **sûre** : elle ne touche jamais au comportement du code.
+Les seuils sont à titre indicatif. Ajustez-les à votre projet (section 5). La seule correction automatique, le retrait d'une directive inutile, est **sûre** : elle ne touche jamais au comportement du code.
 
 ### Bien corriger, et ce qu'il ne faut pas faire
 
@@ -166,6 +166,7 @@ La même sélection se règle en ligne de commande : `--select FUR1,FUR203`, `--
 ```python
 def legacy_entry_point(args):  # foqa:FUR101
     ...
+
 
 result = order.customer.address.city.upper()  # foqa:FUR403
 ```

@@ -7,6 +7,11 @@ Si vous découvrez furryp, lisez les sections 1 à 3. Le reste sert de référen
 ## TLDR :
 
 ```bash
+
+# pour lancer les tests avec l'env
+uv sync
+uv run python -m unittest discover -s tests -t .
+
 # installer en tant que commande, utilisable partout
 uv tool install --editable ./
 
@@ -56,7 +61,7 @@ Pour vérifier :
 furryp --version
 ```
 
-La commande affiche `furryp 1.0.1`. Si `furryp` n'est pas reconnue après `uv tool install`, lancez `uv tool update-shell`, puis rouvrez le terminal.
+La commande affiche `furryp 1.0.2`. Si `furryp` n'est pas reconnue après `uv tool install`, lancez `uv tool update-shell`, puis rouvrez le terminal.
 
 Dans la suite, `furryp` désigne la commande installée. Sans installation, écrivez `uv run --project <chemin-vers-furryp> furryp` à la place.
 
@@ -128,15 +133,15 @@ Une violation apparaît **strictement au-dessus** du seuil.
 |---|---|---|---|---|---|
 | FUR000 | `invalid-syntax` | Fichier illisible ou syntaxe invalide. Toujours actif. | — | fichier | non |
 | FUR001 | `unused-foqa` | Directive `foqa` inutile, de règle non activée ou en double | — | ligne | **oui** |
-| FUR101 | `function-too-long` | Lignes de code du corps d'une fonction, hors signature, décorateurs, commentaires, lignes vides et docstring | 25 | ligne | non |
-| FUR102 | `file-too-long` | Lignes totales du fichier, tout compris | 1200 | fichier | non |
-| FUR201 | `halstead-file` | Volume Halstead du fichier | 40000 | fichier | non |
-| FUR202 | `halstead-function` | Volume Halstead d'une fonction, signature comprise | 1000 | ligne | non |
-| FUR203 | `cognitive-complexity` | Complexité cognitive d'une fonction | 20 | ligne | non |
-| FUR401 | `too-complex-class` | Somme des complexités des méthodes d'une classe. Classes de test et de dispatch non mesurées. | 70 | ligne | non |
+| FUR101 | `function-too-long` | Lignes de code du corps d'une fonction, hors signature, décorateurs, commentaires, lignes vides et docstring | 26 | ligne | non |
+| FUR102 | `file-too-long` | Lignes totales du fichier, tout compris | 1000 | fichier | non |
+| FUR201 | `halstead-file` | Volume Halstead du fichier | 15000 | fichier | non |
+| FUR202 | `halstead-function` | Volume Halstead d'une fonction, signature comprise | 1200 | ligne | non |
+| FUR203 | `cognitive-complexity` | Complexité cognitive d'une fonction | 16 | ligne | non |
+| FUR401 | `too-complex-class` | Somme des complexités des méthodes d'une classe. Classes de test et de dispatch non mesurées. | 80 | ligne | non |
 | FUR402 | `layer-violation` | Import interdit par un contrat de couches. Inactive sans contrat (section 7.4). | — | ligne | non |
 | FUR403 | `demeter-chain` | Profondeur d'une chaîne d'attributs : `a.b.c.d.e` vaut 4 | 3 | ligne | non |
-| FUR404 | `too-many-instance-attributes` | Noms distincts affectés sur `self`. Classes de test et de données non mesurées. | 14 | ligne | non |
+| FUR404 | `too-many-instance-attributes` | Noms distincts affectés sur `self`. Classes de test et de données non mesurées. | 20 | ligne | non |
 
 Le **niveau** décide de la forme de la directive `foqa` (section 8).
 
@@ -231,7 +236,7 @@ Créez **`furryp.json` à côté du `pyproject.toml`** de votre projet. furryp r
 | `function-too-long` | `max-lines` | 26 | Lignes de code au maximum. |
 | `file-too-long` | `max-lines` | 1000 | Lignes au maximum. |
 | `halstead-file` | `metric` | `"volume"` | Mesure utilisée : `volume`, `difficulty`, `effort` ou `bugs`. |
-| `halstead-file` | `max` | 14000 | Maximum de cette mesure. |
+| `halstead-file` | `max` | 15000 | Maximum de cette mesure. |
 | `halstead-function` | `metric` | `"volume"` | Comme ci-dessus. |
 | `halstead-function` | `max` | 1200 | Maximum de cette mesure. |
 | `cognitive-complexity` | `max` | 16 | Complexité au maximum. |
@@ -245,7 +250,7 @@ Créez **`furryp.json` à côté du `pyproject.toml`** de votre projet. furryp r
 | `layer-violation` | `include-type-checking` | `true` | Compte aussi les imports d'un bloc `if TYPE_CHECKING:`. |
 | `layer-violation` | `contracts` | `[]` | Contrats de couches (7.4). |
 
-Les seuils s'inspirent de la bibliothèque standard de Python 3.14, où ils signalent entre 1 et 14 % des cas selon la règle, et bien moins pour `demeter-chain`. Ajustez-les à votre projet.
+Les seuils sont à titre indicatif. Ajustez-les à votre projet.
 
 ### 7.4 Contrats de couches
 

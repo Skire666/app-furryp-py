@@ -136,17 +136,17 @@ class InvalidSyntaxTest(TempDirTestCase):
 class FileTooLongTest(unittest.TestCase):
     def test_default_limit(self) -> None:
         settings = make_settings({"select": ["FUR102"]})
-        self.assertEqual(codes_at(lint_text("x = 1\n" * 1200, settings)), [])
-        report = lint_text("x = 1\n" * 1200 + "y = 22\n", settings)
-        self.assertEqual(codes_at(report), ["1201:1 FUR102"])
+        self.assertEqual(codes_at(lint_text("x = 1\n" * 1000, settings)), [])
+        report = lint_text("x = 1\n" * 1000 + "y = 22\n", settings)
+        self.assertEqual(codes_at(report), ["1001:1 FUR102"])
         diagnostic = report.diagnostics[0]
-        self.assertEqual(diagnostic.message, "File has too many lines (1201 > 1200)")
+        self.assertEqual(diagnostic.message, "File has too many lines (1001 > 1000)")
         self.assertEqual(
             diagnostic.help,
             "Long files are hard to navigate; consider splitting this one into smaller modules",
         )
         self.assertEqual(
-            (diagnostic.span.end.line, diagnostic.span.end.column), (1201, 7)
+            (diagnostic.span.end.line, diagnostic.span.end.column), (1001, 7)
         )
 
     def test_physical_lines(self) -> None:

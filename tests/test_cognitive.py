@@ -723,7 +723,7 @@ class CognitiveComplexityTest(unittest.TestCase):
 
     def test_default_limit(self) -> None:
         settings = make_settings({"select": ["FUR203"]})
-        body = "    x = a and b\n" * 20
+        body = "    x = a and b\n" * 16
         self.assertEqual(codes_at(lint_text(f"def f():\n{body}", settings)), [])
         self.assertEqual(
             codes_at(lint_text(f"def f():\n{body}    y = c or d\n", settings)),

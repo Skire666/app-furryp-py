@@ -135,10 +135,10 @@ class OptionsTest(unittest.TestCase):
         rules = {
             name: dump_value(options) for name, options in make_settings().rules.items()
         }
-        self.assertEqual(rules["function-too-long"], {"max-lines": 25})
-        self.assertEqual(rules["halstead-file"], {"metric": "volume", "max": 40000})
-        self.assertEqual(rules["halstead-function"], {"metric": "volume", "max": 1000})
-        self.assertEqual(rules["cognitive-complexity"], {"max": 20})
+        self.assertEqual(rules["function-too-long"], {"max-lines": 26})
+        self.assertEqual(rules["halstead-file"], {"metric": "volume", "max": 15000})
+        self.assertEqual(rules["halstead-function"], {"metric": "volume", "max": 1200})
+        self.assertEqual(rules["cognitive-complexity"], {"max": 16})
 
     def test_invalid_options(self) -> None:
         cases = [

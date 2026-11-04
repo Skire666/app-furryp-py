@@ -173,7 +173,7 @@ class FunctionTooLongTest(unittest.TestCase):
 
     def test_default_limit(self) -> None:
         settings = make_settings({"select": ["FUR101"]})
-        body = "    x = 1\n" * 25
+        body = "    x = 1\n" * 26
         self.assertEqual(codes_at(lint_text(f"def f():\n{body}", settings)), [])
         self.assertEqual(
             codes_at(lint_text(f"def f():\n{body}    x = 2\n", settings)),

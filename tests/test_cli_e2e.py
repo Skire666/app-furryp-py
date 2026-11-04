@@ -72,7 +72,7 @@ class CheckTest(TempDirTestCase):
 
     def test_version(self) -> None:
         result = run_furryp(["--version"], self.root)
-        self.assertEqual((result.returncode, result.stdout), (0, "furryp 1.0.1\n"))
+        self.assertEqual((result.returncode, result.stdout), (0, "furryp 1.0.2\n"))
 
     def test_output_stays_utf8_with_a_cp1252_environment(self) -> None:
         write_files(self.root, {CONFIG: '{"report": {"title": "Audit — équipe ☃"}}'})

@@ -46,7 +46,7 @@ class HalsteadFileOptions:
     """Options of FUR201."""
 
     metric: HALSTEAD_METRIC = "volume"
-    max: int = 14000
+    max: int = 15000
 
 
 @dataclass(frozen=True, slots=True)

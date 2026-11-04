@@ -1,4 +1,3 @@
-# furryp: foqa:FUR201
 """The four categories of the report: rating, aggregates, rules, worst files (§12.3).
 
 A rule belongs to the category named by ``Rule.category``. Each category gives its

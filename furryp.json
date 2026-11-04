@@ -3,7 +3,7 @@
   "rules": {
     "function-too-long": { "max-lines": 26 },
     "file-too-long": { "max-lines": 1000 },
-    "halstead-file": { "metric": "volume", "max": 14000 },
+    "halstead-file": { "metric": "volume", "max": 15000 },
     "halstead-function": { "metric": "volume", "max": 1200 },
     "cognitive-complexity": { "max": 16 },
     "too-complex-class": { "max-class-complexity": 80 },
