@@ -34,8 +34,7 @@ class ReportOptions:
     top_n: int = DEFAULT_TOP_N
     title: str = DEFAULT_REPORT_TITLE
     rating_thresholds: tuple[float, ...] = field(
-        default=DEFAULT_RATING_THRESHOLDS,
-        metadata={CHECK_KEY: check_rating_thresholds},
+        default=DEFAULT_RATING_THRESHOLDS, metadata={CHECK_KEY: check_rating_thresholds}
     )
 
 

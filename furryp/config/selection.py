@@ -32,11 +32,7 @@ class CliSelection:
 
 def validate_selectors(settings: Settings, registry: Registry) -> None:
     """Raise ``SchemaError`` at the first unknown selector of ``settings``."""
-    groups = {
-        "select": settings.select,
-        "extend-select": settings.extend_select,
-        "ignore": settings.ignore,
-    }
+    groups = {"select": settings.select, "extend-select": settings.extend_select, "ignore": settings.ignore}
     for pattern, selectors in settings.per_file_ignores.items():
         groups[child_path(PER_FILE_IGNORES_KEY, pattern)] = selectors
     for path, selectors in groups.items():
@@ -56,9 +52,7 @@ def _validate_option(option: str, selectors: Iterable[str], registry: Registry) 
             raise OptionError(option, error) from None
 
 
-def apply_cli_selection(
-    settings: Settings, cli: CliSelection, registry: Registry
-) -> Settings:
+def apply_cli_selection(settings: Settings, cli: CliSelection, registry: Registry) -> Settings:
     """Return ``settings`` with the command-line selection applied."""
     _validate_option("--select", cli.select or (), registry)
     _validate_option("--extend-select", cli.extend_select, registry)
@@ -82,9 +76,7 @@ def active_rules(settings: Settings, registry: Registry) -> frozenset[str]:
     return frozenset(selected - _codes(settings.ignore, registry)) | ALWAYS_SELECTED
 
 
-def file_selection(
-    settings: Settings, registry: Registry, relative: PurePosixPath
-) -> frozenset[str]:
+def file_selection(settings: Settings, registry: Registry, relative: PurePosixPath) -> frozenset[str]:
     """Return the codes of the rules checked on a file (SPEC §4.5).
 
     ``relative`` is the path of the file relative to the project root, in

@@ -36,17 +36,9 @@ NAME_WORD = re.compile(r"[a-z][a-z0-9-]*")
 LIST_SEPARATOR = ","
 COMMENT_START = "#"
 BLANKET = None
-EXPECTED_COLON = (
-    "expected `:` followed by a comma-separated list of codes"
-    " (e.g., `# foqa:FUR101,FUR403`)."
-)
-EXPECTED_LIST = (
-    "expected a comma-separated list of codes (e.g., `# foqa:FUR101,FUR403`)."
-)
-EXPECTED_CODE = (
-    "expected code to consist of uppercase letters followed by digits only"
-    " (e.g. `FUR101`)"
-)
+EXPECTED_COLON = "expected `:` followed by a comma-separated list of codes (e.g., `# foqa:FUR101,FUR403`)."
+EXPECTED_LIST = "expected a comma-separated list of codes (e.g., `# foqa:FUR101,FUR403`)."
+EXPECTED_CODE = "expected code to consist of uppercase letters followed by digits only (e.g. `FUR101`)"
 MISSING_CODE = "expected rule code between commas"
 JOINED_CODES = "expected comma or space delimiter between codes"
 INVALID_WARNINGS = {
@@ -59,10 +51,7 @@ MISPLACED_WARNING = (
     " comments must appear on their own line. For line-level suppression, omit the"
     " `furryp:` prefix."
 )
-DIRECTIVE_PREFIXES = {
-    DirectiveKind.LINE: "# foqa",
-    DirectiveKind.FILE: "# furryp: foqa",
-}
+DIRECTIVE_PREFIXES = {DirectiveKind.LINE: "# foqa", DirectiveKind.FILE: "# furryp: foqa"}
 COMPACT_SEPARATOR = ","
 
 
@@ -137,9 +126,7 @@ def _ends_word(text: str, position: int) -> bool:
     return not following or following.isspace() or following == COMMENT_START
 
 
-def _parse_rule_list(
-    text: str, position: int, registry: Registry
-) -> _RuleList:  # foqa:FUR203
+def _parse_rule_list(text: str, position: int, registry: Registry) -> _RuleList:  # foqa:FUR203
     """Read the identifiers after the colon, separated by commas or blanks.
 
     The list stops at the first word that is not an identifier: the rest of the
@@ -192,10 +179,7 @@ class _Scanner:
         self._source = source
         self._registry = registry
         self._directives: list[Directive] = []
-        self._warnings: dict[DirectiveKind, list[str]] = {
-            DirectiveKind.FILE: [],
-            DirectiveKind.LINE: [],
-        }
+        self._warnings: dict[DirectiveKind, list[str]] = {DirectiveKind.FILE: [], DirectiveKind.LINE: []}
 
     def scan(self) -> DirectiveScan:
         """Read every comment token (none without tokens)."""
@@ -203,10 +187,7 @@ class _Scanner:
             if token.type == tokenize.COMMENT:
                 self._read_file_form(token)
                 self._read_line_form(token)
-        warnings = (
-            *self._warnings[DirectiveKind.FILE],
-            *self._warnings[DirectiveKind.LINE],
-        )
+        warnings = (*self._warnings[DirectiveKind.FILE], *self._warnings[DirectiveKind.LINE])
         return DirectiveScan(tuple(self._directives), warnings)
 
     def _read_file_form(self, token: tokenize.TokenInfo) -> None:
@@ -238,9 +219,7 @@ class _Scanner:
         """Return ``path:line``, as the warnings show it."""
         return f"{self._source.display}:{line}"
 
-    def _parse(
-        self, kind: DirectiveKind, match: re.Match[str], token: tokenize.TokenInfo
-    ) -> _RuleList | None:
+    def _parse(self, kind: DirectiveKind, match: re.Match[str], token: tokenize.TokenInfo) -> _RuleList | None:
         """Return what follows a keyword, or ``None`` if the directive is invalid.
 
         The problems found go to the warnings.
@@ -248,15 +227,10 @@ class _Scanner:
         rules = _parse_after_keyword(token.string, match.end(), self._registry)
         location = self._location(token.start[0])
         if rules.invalid is not None:
-            warning = INVALID_WARNINGS[kind].format(
-                location=location, reason=rules.invalid
-            )
+            warning = INVALID_WARNINGS[kind].format(location=location, reason=rules.invalid)
             self._warnings[kind].append(warning)
             return None
-        self._warnings[kind].extend(
-            LIST_WARNING.format(location=location, reason=reason)
-            for reason in rules.problems
-        )
+        self._warnings[kind].extend(LIST_WARNING.format(location=location, reason=reason) for reason in rules.problems)
         return rules
 
     def _add(
@@ -307,22 +281,15 @@ class Suppressions:
     @property
     def exempts_the_file(self) -> bool:
         """Whether a blanket file directive exempts the whole file."""
-        return any(
-            directive.kind is DirectiveKind.FILE and not directive.identifiers
-            for directive in self._directives
-        )
+        return any(directive.kind is DirectiveKind.FILE and not directive.identifiers for directive in self._directives)
 
     def suppresses(self, diagnostic: Diagnostic) -> bool:
         """Whether ``diagnostic`` is suppressed; record the directives used."""
-        hits = self._hits(DirectiveKind.FILE, diagnostic) or self._hits(
-            DirectiveKind.LINE, diagnostic
-        )
+        hits = self._hits(DirectiveKind.FILE, diagnostic) or self._hits(DirectiveKind.LINE, diagnostic)
         self._used |= hits
         return bool(hits)
 
-    def _hits(
-        self, kind: DirectiveKind, diagnostic: Diagnostic
-    ) -> set[tuple[int, str | None]]:
+    def _hits(self, kind: DirectiveKind, diagnostic: Diagnostic) -> set[tuple[int, str | None]]:
         """Return the identifiers of the directives of ``kind`` that suppress it."""
         line = diagnostic.span.start.line
         return {
@@ -336,11 +303,7 @@ class Suppressions:
         """Return the identifiers of ``directive`` naming ``code``."""
         if not directive.identifiers:
             return (BLANKET,)
-        return tuple(
-            identifier
-            for identifier in directive.identifiers
-            if self._names(identifier, code)
-        )
+        return tuple(identifier for identifier in directive.identifiers if self._names(identifier, code))
 
     def _names(self, identifier: str, code: str) -> bool:
         """Whether ``identifier`` (code or name) designates the rule ``code``."""

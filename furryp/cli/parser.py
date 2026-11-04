@@ -39,27 +39,17 @@ class FurrypArgumentParser(argparse.ArgumentParser):
         raise UsageError("\n".join((message, self.format_usage().rstrip())))
 
 
-def _new_parser(
-    commands: argparse._SubParsersAction, name: str, summary: str
-) -> argparse.ArgumentParser:
+def _new_parser(commands: argparse._SubParsersAction, name: str, summary: str) -> argparse.ArgumentParser:
     """Add the sub-command ``name`` (no colours, suggestions on typos, and no abbreviated options, like ruff)."""
     return commands.add_parser(
-        name,
-        help=summary,
-        description=summary,
-        allow_abbrev=False,
-        color=False,
-        suggest_on_error=True,
+        name, help=summary, description=summary, allow_abbrev=False, color=False, suggest_on_error=True
     )
 
 
 def _add_config_option(parser: argparse.ArgumentParser) -> None:
     """Add ``--config PATH``, shared by ``check`` and ``rule``."""
     parser.add_argument(
-        "--config",
-        type=Path,
-        metavar="PATH",
-        help="Use this JSON configuration file instead of the discovered one.",
+        "--config", type=Path, metavar="PATH", help="Use this JSON configuration file instead of the discovered one."
     )
 
 
@@ -91,10 +81,7 @@ def _add_rule_parser(commands: argparse._SubParsersAction) -> None:
     rule = _new_parser(commands, "rule", "Show the documentation of a rule.")
     target = rule.add_mutually_exclusive_group(required=True)
     target.add_argument(
-        "rule",
-        nargs="?",
-        metavar="CODE|NAME",
-        help="Rule code (recommended, e.g. FUR101) or rule name.",
+        "rule", nargs="?", metavar="CODE|NAME", help="Rule code (recommended, e.g. FUR101) or rule name."
     )
     target.add_argument("--all", action="store_true", help="Show every rule.")
     _add_config_option(rule)
@@ -103,16 +90,10 @@ def _add_rule_parser(commands: argparse._SubParsersAction) -> None:
 def build_parser() -> argparse.ArgumentParser:
     """Return the parser of the ``furryp`` command line."""
     parser = FurrypArgumentParser(
-        prog=PROG,
-        description=DESCRIPTION,
-        allow_abbrev=False,
-        color=False,
-        suggest_on_error=True,
+        prog=PROG, description=DESCRIPTION, allow_abbrev=False, color=False, suggest_on_error=True
     )
     parser.add_argument("--version", action="store_true", help="Print the version.")
-    commands = parser.add_subparsers(
-        dest="command", title="commands", metavar="COMMAND"
-    )
+    commands = parser.add_subparsers(dest="command", title="commands", metavar="COMMAND")
     _add_check_parser(commands)
     _add_rule_parser(commands)
     return parser
@@ -124,6 +105,4 @@ def split_rule_lists(values: Sequence[str] | None) -> tuple[str, ...]:
     An empty item or a space is kept, then refused as an unknown selector, like
     ruff: ``--select "$RULES"`` with an empty variable must not select nothing.
     """
-    return tuple(
-        item for value in values or () for item in value.split(RULE_LIST_SEPARATOR)
-    )
+    return tuple(item for value in values or () for item in value.split(RULE_LIST_SEPARATOR))

@@ -80,8 +80,7 @@ def module_matches(pattern: str, module: str) -> bool:
     expected = pattern.split(DOT)
     segments = module.split(DOT)
     return len(segments) >= len(expected) and all(
-        wanted in {WILDCARD, segment}
-        for wanted, segment in zip(expected, segments, strict=False)
+        wanted in {WILDCARD, segment} for wanted, segment in zip(expected, segments, strict=False)
     )
 
 
@@ -120,28 +119,17 @@ def import_targets(node: ImportNode, package: str) -> Iterator[ImportTarget]:
             yield ImportTarget(module + DOT + alias.name, alias, module)
 
 
-def _blocks(
-    node: ast.AST, guarded: bool, imports: ImportTable
-) -> list[tuple[ast.AST, bool]]:
+def _blocks(node: ast.AST, guarded: bool, imports: ImportTable) -> list[tuple[ast.AST, bool]]:
     """Return the statements directly in ``node``, each with whether it runs only for a type checker.
 
     An ``else`` is executed code, as for ruff.
     """
     if isinstance(node, ast.If) and is_type_checking_test(node.test, imports):
-        return [
-            *((child, True) for child in node.body),
-            *((child, guarded) for child in node.orelse),
-        ]
-    return [
-        (child, guarded)
-        for child in ast.iter_child_nodes(node)
-        if isinstance(child, BLOCK_NODES)
-    ]
+        return [*((child, True) for child in node.body), *((child, guarded) for child in node.orelse)]
+    return [(child, guarded) for child in ast.iter_child_nodes(node) if isinstance(child, BLOCK_NODES)]
 
 
-def all_imports(
-    tree: ast.Module, imports: ImportTable
-) -> Iterator[tuple[ImportNode, bool]]:
+def all_imports(tree: ast.Module, imports: ImportTable) -> Iterator[tuple[ImportNode, bool]]:
     """Yield the imports of ``tree`` at any depth, in the order of the source.
 
     Each one comes with whether it is in the body of a ``TYPE_CHECKING`` block.

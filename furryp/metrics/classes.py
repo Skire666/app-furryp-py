@@ -16,27 +16,14 @@ import re
 from collections.abc import Iterable, Iterator, Sequence
 from dataclasses import dataclass
 
-from furryp.core.ast_utils import (
-    BLOCK_NODES,
-    FUNCTION_TYPES,
-    FunctionNode,
-    docstring_of,
-    name_span,
-    tree_of,
-)
+from furryp.core.ast_utils import BLOCK_NODES, FUNCTION_TYPES, FunctionNode, docstring_of, name_span, tree_of
 from furryp.core.diagnostic import Span
 from furryp.core.names import ImportTable, import_table
 from furryp.core.source import SourceFile
 from furryp.metrics.cyclomatic import cyclomatic_complexity
 
 DOT = "."
-ENUM_BASES = (
-    "enum.Enum",
-    "enum.IntEnum",
-    "enum.StrEnum",
-    "enum.Flag",
-    "enum.IntFlag",
-)
+ENUM_BASES = ("enum.Enum", "enum.IntEnum", "enum.StrEnum", "enum.Flag", "enum.IntFlag")
 DUNDER = "__"
 CONSTRUCTOR = "__init__"
 TEST_BASE_SUFFIX = "TestCase"
@@ -70,13 +57,7 @@ DATA_BASES = frozenset(
         *ENUM_BASES,
     }
 )
-DATA_BASE_CALLS = frozenset(
-    {
-        "collections.namedtuple",
-        "typing.NamedTuple",
-        "typing_extensions.NamedTuple",
-    }
-)
+DATA_BASE_CALLS = frozenset({"collections.namedtuple", "typing.NamedTuple", "typing_extensions.NamedTuple"})
 NO_INSTANCE_DECORATORS = frozenset(
     {
         "classmethod",
@@ -122,13 +103,7 @@ def _first_parameter(node: FunctionNode) -> str | None:
 
 def _binds(arguments: ast.arguments, name: str) -> bool:
     """Whether ``name`` is one of the parameters of a signature."""
-    parameters = (
-        *arguments.posonlyargs,
-        *arguments.args,
-        *arguments.kwonlyargs,
-        arguments.vararg,
-        arguments.kwarg,
-    )
+    parameters = (*arguments.posonlyargs, *arguments.args, *arguments.kwonlyargs, arguments.vararg, arguments.kwarg)
     return any(item is not None and item.arg == name for item in parameters)
 
 
@@ -170,14 +145,10 @@ def _receives_instance(node: FunctionNode, imports: ImportTable) -> bool:
     """Whether the first parameter of a method of a class is an instance."""
     if node.name in NO_INSTANCE_METHODS:
         return False
-    return not any(
-        imports.resolve(item) in NO_INSTANCE_DECORATORS for item in node.decorator_list
-    )
+    return not any(imports.resolve(item) in NO_INSTANCE_DECORATORS for item in node.decorator_list)
 
 
-def _instance_attributes(
-    functions: Sequence[FunctionNode], imports: ImportTable
-) -> int:
+def _instance_attributes(functions: Sequence[FunctionNode], imports: ImportTable) -> int:
     """Return the number of distinct names assigned on the instances."""
     names: set[str] = set()
     for node in functions:
@@ -195,9 +166,7 @@ def _base_names(node: ast.ClassDef, imports: ImportTable) -> Iterator[str]:
             yield resolved
 
 
-def _is_test_class(
-    node: ast.ClassDef, names: Iterable[str], imports: ImportTable
-) -> bool:
+def _is_test_class(node: ast.ClassDef, names: Iterable[str], imports: ImportTable) -> bool:
     """Whether a class is a ``unittest`` test case or is collected by pytest: named ``Test…``, without ``__init__``."""
     for base in _base_names(node, imports):
         if base.rpartition(DOT)[2].endswith(TEST_BASE_SUFFIX):
@@ -209,10 +178,7 @@ def _is_dispatch_class(names: Sequence[str]) -> bool:
     """Whether at least half of at least 5 methods share a dispatch prefix."""
     if len(names) < DISPATCH_MIN_METHODS:
         return False
-    return any(
-        2 * sum(name.startswith(prefix) for name in names) >= len(names)
-        for prefix in DISPATCH_PREFIXES
-    )
+    return any(2 * sum(name.startswith(prefix) for name in names) >= len(names) for prefix in DISPATCH_PREFIXES)
 
 
 def _is_known_data_class(node: ast.ClassDef, imports: ImportTable) -> bool:
@@ -223,10 +189,7 @@ def _is_known_data_class(node: ast.ClassDef, imports: ImportTable) -> bool:
             return True
     if any(base in DATA_BASES for base in _base_names(node, imports)):
         return True
-    return any(
-        isinstance(base, ast.Call) and imports.resolve(base.func) in DATA_BASE_CALLS
-        for base in node.bases
-    )
+    return any(isinstance(base, ast.Call) and imports.resolve(base.func) in DATA_BASE_CALLS for base in node.bases)
 
 
 def _is_setter_body(statement: ast.stmt, node: FunctionNode, parameter: str) -> bool:
@@ -238,20 +201,12 @@ def _is_setter_body(statement: ast.stmt, node: FunctionNode, parameter: str) -> 
     else:
         return False
     value = statement.value
-    return (
-        _is_attribute_of(target, parameter)
-        and isinstance(value, ast.Name)
-        and _binds(node.args, value.id)
-    )
+    return _is_attribute_of(target, parameter) and isinstance(value, ast.Name) and _binds(node.args, value.id)
 
 
 def _is_attribute_of(node: ast.expr | None, parameter: str) -> bool:
     """Whether ``node`` is ``parameter.x``."""
-    return (
-        isinstance(node, ast.Attribute)
-        and isinstance(node.value, ast.Name)
-        and node.value.id == parameter
-    )
+    return isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name) and node.value.id == parameter
 
 
 def is_accessor(node: FunctionNode) -> bool:
@@ -271,13 +226,9 @@ def _is_dunder(name: str) -> bool:
     return name.startswith(DUNDER) and name.endswith(DUNDER)
 
 
-def _is_data_class(
-    node: ast.ClassDef, functions: Sequence[FunctionNode], imports: ImportTable
-) -> bool:
+def _is_data_class(node: ast.ClassDef, functions: Sequence[FunctionNode], imports: ImportTable) -> bool:
     """Whether a class is declared as data, or has no other methods than dunders and accessors."""
-    return _is_known_data_class(node, imports) or all(
-        _is_dunder(item.name) or is_accessor(item) for item in functions
-    )
+    return _is_known_data_class(node, imports) or all(_is_dunder(item.name) or is_accessor(item) for item in functions)
 
 
 def _methods(node: ast.ClassDef) -> list[FunctionNode]:
@@ -292,17 +243,11 @@ def _methods(node: ast.ClassDef) -> list[FunctionNode]:
         if isinstance(current, FUNCTION_TYPES):
             functions.append(current)
         elif not isinstance(current, ast.ClassDef):
-            stack.extend(
-                child
-                for child in ast.iter_child_nodes(current)
-                if isinstance(child, BLOCK_NODES)
-            )
+            stack.extend(child for child in ast.iter_child_nodes(current) if isinstance(child, BLOCK_NODES))
     return functions
 
 
-def _measure(
-    source: SourceFile, node: ast.ClassDef, imports: ImportTable
-) -> ClassMetrics:
+def _measure(source: SourceFile, node: ast.ClassDef, imports: ImportTable) -> ClassMetrics:
     """Return the measures of the class ``node``."""
     functions = _methods(node)
     names = [item.name for item in functions]
@@ -322,7 +267,4 @@ def class_metrics(source: SourceFile) -> tuple[ClassMetrics, ...]:
     tree = tree_of(source)
     imports = import_table(tree)
     classes = [node for node in ast.walk(tree) if isinstance(node, ast.ClassDef)]
-    return tuple(
-        _measure(source, node, imports)
-        for node in sorted(classes, key=lambda item: item.lineno)
-    )
+    return tuple(_measure(source, node, imports) for node in sorted(classes, key=lambda item: item.lineno))

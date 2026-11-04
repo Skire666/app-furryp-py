@@ -35,20 +35,10 @@ from furryp.core.registry import Rule, RuleContext, Scope, options_of
 
 LAYER_VIOLATION_CODE = "FUR402"
 LAYER_VIOLATION_NAME = "layer-violation"
-MESSAGE = (
-    "Import of `{target}` breaks contract `{contract}`: "
-    "`{source}` must not import `{forbidden}`"
-)
-LAYERS_HELP = (
-    "A layer only imports the layers below it; consider inverting this dependency"
-)
-FORBIDDEN_HELP = (
-    "This dependency is forbidden; consider moving the shared code or inverting it"
-)
-INDEPENDENCE_HELP = (
-    "These modules must stay independent; "
-    "consider moving the shared code to a common module"
-)
+MESSAGE = "Import of `{target}` breaks contract `{contract}`: `{source}` must not import `{forbidden}`"
+LAYERS_HELP = "A layer only imports the layers below it; consider inverting this dependency"
+FORBIDDEN_HELP = "This dependency is forbidden; consider moving the shared code or inverting it"
+INDEPENDENCE_HELP = "These modules must stay independent; consider moving the shared code to a common module"
 DEFAULT_SOURCE_ROOTS = (".",)
 
 LAYER = str | tuple[str, ...]
@@ -80,16 +70,10 @@ class ForbiddenContract:
     def breach(self, module: str, target: ImportTarget) -> Breach | None:
         """Return what ``module`` breaks by importing ``target``, if anything."""
         source = _first_match(self.source, module)
-        forbidden = next(
-            (item for item in self.forbidden if target.matched_by(item)), None
-        )
+        forbidden = next((item for item in self.forbidden if target.matched_by(item)), None)
         if source is None or forbidden is None:
             return None
-        return Breach(
-            matched_prefix(source, module),
-            matched_prefix(forbidden, target.name),
-            FORBIDDEN_HELP,
-        )
+        return Breach(matched_prefix(source, module), matched_prefix(forbidden, target.name), FORBIDDEN_HELP)
 
 
 def _layer_patterns(layer: LAYER) -> tuple[str, ...]:
@@ -102,18 +86,13 @@ def _specificity(pattern: str) -> tuple[int, int]:
     return pattern.count(DOT), -pattern.count(WILDCARD)
 
 
-def _level_of(
-    layers: Sequence[LAYER], matches: Callable[[str], bool]
-) -> tuple[int, str] | None:
+def _level_of(layers: Sequence[LAYER], matches: Callable[[str], bool]) -> tuple[int, str] | None:
     """Return the level and the pattern of a module.
 
     The pattern is the most specific one accepted by ``matches``, the highest layer in a tie.
     """
     found = [
-        (level, pattern)
-        for level, layer in enumerate(layers)
-        for pattern in _layer_patterns(layer)
-        if matches(pattern)
+        (level, pattern) for level, layer in enumerate(layers) for pattern in _layer_patterns(layer) if matches(pattern)
     ]
     return max(found, key=lambda item: _specificity(item[1]), default=None)
 
@@ -135,11 +114,7 @@ class LayersContract:
         other = _level_of(self.layers, target.matched_by)
         if own is None or other is None or other[0] >= own[0]:
             return None
-        return Breach(
-            matched_prefix(own[1], module),
-            matched_prefix(other[1], target.name),
-            LAYERS_HELP,
-        )
+        return Breach(matched_prefix(own[1], module), matched_prefix(other[1], target.name), LAYERS_HELP)
 
 
 @dataclass(frozen=True, slots=True)
@@ -172,9 +147,7 @@ class LayerViolationOptions:
 
     source_roots: tuple[str, ...] = DEFAULT_SOURCE_ROOTS
     include_type_checking: bool = True
-    contracts: tuple[
-        ForbiddenContract | LayersContract | IndependenceContract, ...
-    ] = ()
+    contracts: tuple[ForbiddenContract | LayersContract | IndependenceContract, ...] = ()
 
 
 def project_context(root: Path, rules: Mapping[str, object]) -> ProjectContext:
@@ -184,9 +157,7 @@ def project_context(root: Path, rules: Mapping[str, object]) -> ProjectContext:
     return ProjectContext(root, roots)
 
 
-def _breaches(
-    context: RuleContext[LayerViolationOptions], module: str, target: ImportTarget
-) -> Iterator[Diagnostic]:
+def _breaches(context: RuleContext[LayerViolationOptions], module: str, target: ImportTarget) -> Iterator[Diagnostic]:
     """Yield a diagnostic per contract broken by importing ``target``."""
     for contract in context.options.contracts:
         breach = contract.breach(module, target)
@@ -195,10 +166,7 @@ def _breaches(
                 LAYER_VIOLATION_CODE,
                 LAYER_VIOLATION_NAME,
                 MESSAGE.format(
-                    target=target.name,
-                    contract=contract.name,
-                    source=breach.source,
-                    forbidden=breach.forbidden,
+                    target=target.name, contract=contract.name, source=breach.source, forbidden=breach.forbidden
                 ),
                 context.source.path,
                 node_span(context.source, target.node),
@@ -206,9 +174,7 @@ def _breaches(
             )
 
 
-def check_layer_violation(
-    context: RuleContext[LayerViolationOptions],
-) -> Iterator[Diagnostic]:
+def check_layer_violation(context: RuleContext[LayerViolationOptions]) -> Iterator[Diagnostic]:
     """Report the imports that break a contract, at any depth of the file."""
     options, source = context.options, context.source
     module = context.project.module_of(source.path)

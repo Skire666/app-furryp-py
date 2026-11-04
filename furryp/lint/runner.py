@@ -23,12 +23,7 @@ from furryp.core.discovery import relative_to_root
 from furryp.core.names import import_table
 from furryp.core.paths import display_path
 from furryp.core.registry import Registry, RuleContext
-from furryp.core.source import (
-    SourceDecodeError,
-    SourceFile,
-    SourceReadError,
-    read_source,
-)
+from furryp.core.source import SourceDecodeError, SourceFile, SourceReadError, read_source
 from furryp.core.suppression import Suppressions, scan_directives
 from furryp.metrics.file_metrics import FileMetrics
 from furryp.rules.contracts import project_context
@@ -121,9 +116,7 @@ class Linter:
             self._warn(warning)
         return Suppressions(scan.directives, self._registry)
 
-    def _run_rules(
-        self, source: SourceFile, selected: frozenset[str], metrics: FileMetrics
-    ) -> list[Diagnostic]:
+    def _run_rules(self, source: SourceFile, selected: frozenset[str], metrics: FileMetrics) -> list[Diagnostic]:
         """Return the diagnostics of the selected rules, in rule order."""
         diagnostics: list[Diagnostic] = []
         imports = import_table(source.tree)

@@ -31,12 +31,7 @@ JSON_TYPE_NAMES = (
     (list, "array"),
     (dict, "object"),
 )
-EXPECTED_SCALARS = {
-    bool: "a boolean",
-    int: "an integer",
-    float: "a number",
-    str: "a string",
-}
+EXPECTED_SCALARS = {bool: "a boolean", int: "an integer", float: "a number", str: "a string"}
 
 TAG_KEY = "type"
 JSON_INDENT = 2
@@ -95,15 +90,11 @@ def parse_dataclass[T](cls: type[T], data: object, path: str, base: T | None) ->
         if item is None:
             raise SchemaError(key_path, "unknown key" + did_you_mean(key, fields))
         current = getattr(start, item.name)
-        changes[item.name] = _parse_field(
-            item.metadata, hints[item.name], value, key_path, current
-        )
+        changes[item.name] = _parse_field(item.metadata, hints[item.name], value, key_path, current)
     return dataclasses.replace(start, **changes)
 
 
-def _parse_field(
-    metadata: Mapping[str, Check], hint: Hint, value: object, path: str, current: object
-) -> object:
+def _parse_field(metadata: Mapping[str, Check], hint: Hint, value: object, path: str, current: object) -> object:
     """Convert the JSON ``value`` of a field, then run its domain check."""
     parsed = parse_value(hint, value, path, current)
     check = metadata.get(CHECK_KEY)
@@ -154,17 +145,13 @@ def _parse_tuple(item_hint: Hint, value: object, path: str) -> tuple[object, ...
     """Convert a JSON array to a tuple of ``item_hint``."""
     if not isinstance(value, list):
         raise SchemaError(path, f"expected an array, got {json_type_name(value)}")
-    return tuple(
-        parse_value(item_hint, item, f"{path}[{index}]")
-        for index, item in enumerate(value)
-    )
+    return tuple(parse_value(item_hint, item, f"{path}[{index}]") for index, item in enumerate(value))
 
 
 def _parse_dict(value_hint: Hint, value: object, path: str) -> dict[str, object]:
     """Convert a JSON object with free keys to a dict of ``value_hint``."""
     return {
-        key: parse_value(value_hint, item, child_path(path, key))
-        for key, item in expect_object(value, path).items()
+        key: parse_value(value_hint, item, child_path(path, key)) for key, item in expect_object(value, path).items()
     }
 
 
@@ -200,10 +187,7 @@ def _parse_tagged(members: tuple[Any, ...], value: object, path: str) -> object:
 def dump_value(value: object) -> object:
     """Return the JSON form of an option value (inverse of ``parse_value``)."""
     if dataclasses.is_dataclass(value) and not isinstance(value, type):
-        return {
-            json_key(item.name): dump_value(getattr(value, item.name))
-            for item in dataclasses.fields(value)
-        }
+        return {json_key(item.name): dump_value(getattr(value, item.name)) for item in dataclasses.fields(value)}
     if isinstance(value, tuple):
         return [dump_value(item) for item in value]
     if isinstance(value, dict):
@@ -213,6 +197,4 @@ def dump_value(value: object) -> object:
 
 def settings_json(settings: object) -> str:
     """Return the settings as a JSON text, usable as a configuration file."""
-    return json.dumps(
-        dump_value(settings), indent=JSON_INDENT, sort_keys=True, ensure_ascii=False
-    )
+    return json.dumps(dump_value(settings), indent=JSON_INDENT, sort_keys=True, ensure_ascii=False)

@@ -17,27 +17,16 @@ from furryp.metrics.halstead import metric_value
 HALSTEAD_METRIC = Literal["volume", "difficulty", "effort", "bugs"]
 HALSTEAD_FILE_CODE = "FUR201"
 HALSTEAD_FILE_NAME = "halstead-file"
-HALSTEAD_FILE_MESSAGE = (
-    "Halstead {metric} of the file is too high ({value:.1f} > {max})"
-)
+HALSTEAD_FILE_MESSAGE = "Halstead {metric} of the file is too high ({value:.1f} > {max})"
 HALSTEAD_FILE_HELP = "This file does a lot; consider splitting it or simplifying it"
 HALSTEAD_FUNCTION_CODE = "FUR202"
 HALSTEAD_FUNCTION_NAME = "halstead-function"
-HALSTEAD_FUNCTION_MESSAGE = (
-    "Halstead {metric} of function `{name}` is too high ({value:.1f} > {max})"
-)
-HALSTEAD_FUNCTION_HELP = (
-    "This function does a lot; consider splitting it or simplifying it"
-)
+HALSTEAD_FUNCTION_MESSAGE = "Halstead {metric} of function `{name}` is too high ({value:.1f} > {max})"
+HALSTEAD_FUNCTION_HELP = "This function does a lot; consider splitting it or simplifying it"
 COGNITIVE_CODE = "FUR203"
 COGNITIVE_NAME = "cognitive-complexity"
-COGNITIVE_MESSAGE = (
-    "Cognitive complexity of function `{name}` is too high ({value} > {max})"
-)
-COGNITIVE_HELP = (
-    "Branches and nesting make this function hard to follow; "
-    "consider simplifying its control flow"
-)
+COGNITIVE_MESSAGE = "Cognitive complexity of function `{name}` is too high ({value} > {max})"
+COGNITIVE_HELP = "Branches and nesting make this function hard to follow; consider simplifying its control flow"
 
 
 @dataclass(frozen=True, slots=True)
@@ -63,9 +52,7 @@ class CognitiveComplexityOptions:
     max: int = 16
 
 
-def check_halstead_file(
-    context: RuleContext[HalsteadFileOptions, FileMetrics],
-) -> Iterator[Diagnostic]:
+def check_halstead_file(context: RuleContext[HalsteadFileOptions, FileMetrics]) -> Iterator[Diagnostic]:
     """Report a file whose Halstead metric is above ``max``."""
     options, metrics = context.options, context.metrics
     value = metric_value(metrics.halstead, options.metric)
@@ -73,9 +60,7 @@ def check_halstead_file(
         yield Diagnostic(
             HALSTEAD_FILE_CODE,
             HALSTEAD_FILE_NAME,
-            HALSTEAD_FILE_MESSAGE.format(
-                metric=options.metric, value=value, max=options.max
-            ),
+            HALSTEAD_FILE_MESSAGE.format(metric=options.metric, value=value, max=options.max),
             context.source.path,
             FILE_START,
             HALSTEAD_FILE_HELP,
@@ -94,9 +79,7 @@ HALSTEAD_FILE = Rule(
 )
 
 
-def check_halstead_function(
-    context: RuleContext[HalsteadFunctionOptions, FileMetrics],
-) -> Iterator[Diagnostic]:
+def check_halstead_function(context: RuleContext[HalsteadFunctionOptions, FileMetrics]) -> Iterator[Diagnostic]:
     """Report a function whose Halstead metric is above ``max``.
 
     Nested functions count in their parent and are also evaluated alone (A13).
@@ -109,10 +92,7 @@ def check_halstead_function(
                 HALSTEAD_FUNCTION_CODE,
                 HALSTEAD_FUNCTION_NAME,
                 HALSTEAD_FUNCTION_MESSAGE.format(
-                    name=function.name,
-                    metric=options.metric,
-                    value=value,
-                    max=options.max,
+                    name=function.name, metric=options.metric, value=value, max=options.max
                 ),
                 context.source.path,
                 function.span,
@@ -132,9 +112,7 @@ HALSTEAD_FUNCTION = Rule(
 )
 
 
-def check_cognitive_complexity(
-    context: RuleContext[CognitiveComplexityOptions, FileMetrics],
-) -> Iterator[Diagnostic]:
+def check_cognitive_complexity(context: RuleContext[CognitiveComplexityOptions, FileMetrics]) -> Iterator[Diagnostic]:
     """Report a function whose cognitive complexity is above ``max``.
 
     A nested function counts in its parent and is not evaluated alone (A13).
@@ -145,9 +123,7 @@ def check_cognitive_complexity(
             yield Diagnostic(
                 COGNITIVE_CODE,
                 COGNITIVE_NAME,
-                COGNITIVE_MESSAGE.format(
-                    name=function.name, value=function.cognitive, max=limit
-                ),
+                COGNITIVE_MESSAGE.format(name=function.name, value=function.cognitive, max=limit),
                 context.source.path,
                 function.span,
                 COGNITIVE_HELP,

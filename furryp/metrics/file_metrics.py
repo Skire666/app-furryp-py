@@ -25,19 +25,9 @@ from furryp.core.ast_utils import (
 from furryp.core.diagnostic import Span
 from furryp.core.source import SourceFile
 from furryp.metrics.classes import ClassMetrics, class_metrics
-from furryp.metrics.cognitive import (
-    ClauseKeywords,
-    Contribution,
-    clause_keywords,
-    cognitive_contributions,
-)
+from furryp.metrics.cognitive import ClauseKeywords, Contribution, clause_keywords, cognitive_contributions
 from furryp.metrics.halstead import Halstead, counted_tokens, measure
-from furryp.metrics.lines import (
-    CodeLines,
-    code_lines_of,
-    function_code_lines,
-    significant_tokens,
-)
+from furryp.metrics.lines import CodeLines, code_lines_of, function_code_lines, significant_tokens
 
 
 @dataclass(frozen=True, slots=True)
@@ -87,9 +77,7 @@ def _function_scopes(tree: ast.Module) -> Iterator[_FunctionScope]:
         elif isinstance(node, ast.ClassDef):
             prefix, method = prefix + node.name + DOT, True
         children = [
-            (child, prefix, nested, method)
-            for child in ast.iter_child_nodes(node)
-            if isinstance(child, BLOCK_NODES)
+            (child, prefix, nested, method) for child in ast.iter_child_nodes(node) if isinstance(child, BLOCK_NODES)
         ]
         stack.extend(reversed(children))
 
@@ -167,9 +155,7 @@ class FileMetrics:
         """Return the contributions of a function, none if it is nested."""
         if scope.nested:
             return ()
-        return cognitive_contributions(
-            scope.node, scope.method, self._source, self._clauses
-        )
+        return cognitive_contributions(scope.node, scope.method, self._source, self._clauses)
 
     def _measure_function(self, scope: _FunctionScope) -> FunctionMetrics:
         """Return the measures of a function."""

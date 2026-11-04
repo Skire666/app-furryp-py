@@ -16,14 +16,7 @@ import ast
 
 from furryp.core.ast_utils import BLOCK_NODES, FUNCTION_TYPES, FunctionNode
 
-BRANCH_TYPES = (
-    ast.If,
-    ast.For,
-    ast.AsyncFor,
-    ast.While,
-    ast.ExceptHandler,
-    *FUNCTION_TYPES,
-)
+BRANCH_TYPES = (ast.If, ast.For, ast.AsyncFor, ast.While, ast.ExceptHandler, *FUNCTION_TYPES)
 TRY_TYPES = (ast.Try, ast.TryStar)
 
 
@@ -69,9 +62,5 @@ def cyclomatic_complexity(function: FunctionNode) -> int:
         current = stack.pop()
         if not isinstance(current, ast.ClassDef):
             total += _branches(current)
-            stack.extend(
-                child
-                for child in ast.iter_child_nodes(current)
-                if isinstance(child, BLOCK_NODES)
-            )
+            stack.extend(child for child in ast.iter_child_nodes(current) if isinstance(child, BLOCK_NODES))
     return total

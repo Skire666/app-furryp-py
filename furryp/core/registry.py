@@ -7,12 +7,7 @@ from enum import StrEnum
 from typing import Any
 
 from furryp.core.diagnostic import Diagnostic
-from furryp.core.errors import (
-    RULE_OR_PREFIX,
-    UnknownRuleError,
-    did_you_mean,
-    format_suggestion,
-)
+from furryp.core.errors import RULE_OR_PREFIX, UnknownRuleError, did_you_mean, format_suggestion
 from furryp.core.names import ImportTable
 from furryp.core.project import ProjectContext
 from furryp.core.source import SourceFile
@@ -89,9 +84,7 @@ class Registry:
     def __init__(self, rules: Iterable[Rule]) -> None:
         """Sort ``rules`` by code and index them by code and by name."""
         self._rules = tuple(sorted(rules, key=lambda rule: rule.code))
-        self._by_key = {
-            key: rule for rule in self._rules for key in (rule.code, rule.name)
-        }
+        self._by_key = {key: rule for rule in self._rules for key in (rule.code, rule.name)}
 
     @property
     def rules(self) -> tuple[Rule, ...]:
@@ -135,9 +128,5 @@ class Registry:
 
     def _selectors(self) -> tuple[str, ...]:
         """Every valid selector: ``FUR``, family prefixes, codes and names."""
-        families = {
-            rule.code[:end]
-            for rule in self._rules
-            for end in range(len(ALL_RULES_PREFIX) + 1, len(rule.code))
-        }
+        families = {rule.code[:end] for rule in self._rules for end in range(len(ALL_RULES_PREFIX) + 1, len(rule.code))}
         return (ALL_RULES_PREFIX, *sorted(families), *self._by_key)

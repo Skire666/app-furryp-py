@@ -33,8 +33,5 @@ def render_statistics(diagnostics: Sequence[Diagnostic]) -> str:
     fixable = {d.code for d in diagnostics if d.fix is not None}
     width = len(str(max(counts.values())))
     rows = sorted(counts.items(), key=lambda item: (-item[1], item[0]))
-    lines = [
-        f"{count:>{width}}\t{code}\t{_marker(code, fixable)}{names[code]}"
-        for code, count in rows
-    ]
+    lines = [f"{count:>{width}}\t{code}\t{_marker(code, fixable)}{names[code]}" for code, count in rows]
     return "\n".join([*lines, render_footer(diagnostics)])

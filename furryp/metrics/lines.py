@@ -58,9 +58,7 @@ class CodeLines:
 def _docstring_ranges(source: SourceFile) -> list[TextRange]:
     """Return the sorted text ranges of the docstrings of a file (§10.3)."""
     statements = [
-        owner.body[0]
-        for owner in ast.walk(tree_of(source))
-        if isinstance(owner, DOCSTRING_OWNERS) and owner.body
+        owner.body[0] for owner in ast.walk(tree_of(source)) if isinstance(owner, DOCSTRING_OWNERS) and owner.body
     ]
     return sorted(
         (node_start(source, statement), node_end(source, statement))
@@ -86,16 +84,13 @@ def significant_tokens(source: SourceFile) -> tuple[tokenize.TokenInfo, ...]:
     return tuple(
         token
         for token in source.tokens or ()
-        if token.type not in NOT_SIGNIFICANT_TOKENS
-        and not _in_ranges(docstrings, token.start)
+        if token.type not in NOT_SIGNIFICANT_TOKENS and not _in_ranges(docstrings, token.start)
     )
 
 
 def code_lines_of(tokens: Iterable[tokenize.TokenInfo]) -> CodeLines:
     """Return the lines covered by ``tokens``, from their start to their end."""
-    numbers = {
-        line for token in tokens for line in range(token.start[0], token.end[0] + 1)
-    }
+    numbers = {line for token in tokens for line in range(token.start[0], token.end[0] + 1)}
     return CodeLines(tuple(sorted(numbers)))
 
 

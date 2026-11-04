@@ -76,9 +76,7 @@ def configure_streams() -> None:
     """
     for stream in (sys.stdout, sys.stderr):
         if isinstance(stream, io.TextIOWrapper):
-            stream.reconfigure(
-                encoding=STREAM_ENCODING, errors=STREAM_ERRORS, newline=STREAM_NEWLINE
-            )
+            stream.reconfigure(encoding=STREAM_ENCODING, errors=STREAM_ERRORS, newline=STREAM_NEWLINE)
 
 
 def _print_error(message: str) -> None:
@@ -168,9 +166,7 @@ def warn_discovery(discovery: DiscoveryResult, cwd: Path) -> None:
         print(NO_FILES_WARNING, file=sys.stderr)
 
 
-def lint_files(
-    linter: Linter, paths: Sequence[Path], cwd: Path, args: argparse.Namespace
-) -> int:
+def lint_files(linter: Linter, paths: Sequence[Path], cwd: Path, args: argparse.Namespace) -> int:
     """Check the files and print the diagnostics or the statistics."""
     reports, failures = for_each_file(paths, cwd, linter.check_path)
     entries = collect_entries(reports, cwd)
@@ -189,9 +185,7 @@ def _fix_path(linter: Linter, write: bool, path: Path) -> FixResult:
     return result
 
 
-def _fixed_files(
-    linter: Linter, paths: Sequence[Path], cwd: Path, write: bool
-) -> tuple[list[FixResult], int]:
+def _fixed_files(linter: Linter, paths: Sequence[Path], cwd: Path, write: bool) -> tuple[list[FixResult], int]:
     """Fix the files (and write them if ``write``); report the reverted ones.
 
     Return the results and the number of files that failed.
@@ -203,9 +197,7 @@ def _fixed_files(
     return results, len(failures)
 
 
-def fix_files(
-    linter: Linter, paths: Sequence[Path], cwd: Path, args: argparse.Namespace
-) -> int:
+def fix_files(linter: Linter, paths: Sequence[Path], cwd: Path, args: argparse.Namespace) -> int:
     """``--fix``: write the fixes, then print the remaining diagnostics."""
     results, errors = _fixed_files(linter, paths, cwd, write=True)
     entries = collect_entries([result.report for result in results], cwd)
@@ -213,14 +205,11 @@ def fix_files(
     return compute_exit_code(len(entries), errors, args.exit_zero)
 
 
-def diff_files(
-    linter: Linter, paths: Sequence[Path], cwd: Path, args: argparse.Namespace
-) -> int:
+def diff_files(linter: Linter, paths: Sequence[Path], cwd: Path, args: argparse.Namespace) -> int:
     """``--diff``: print the diff of the fixes, write nothing (exit 1 if any)."""
     results, errors = _fixed_files(linter, paths, cwd, write=False)
     changed = sorted(
-        (result for result in results if result.changed),
-        key=lambda result: display_path(result.report.path, cwd),
+        (result for result in results if result.changed), key=lambda result: display_path(result.report.path, cwd)
     )
     for result in changed:
         display = display_path(result.report.path, cwd)
@@ -231,9 +220,7 @@ def diff_files(
     return compute_exit_code(len(changed), errors, args.exit_zero)
 
 
-def add_foqa_files(
-    linter: Linter, paths: Sequence[Path], cwd: Path, args: argparse.Namespace
-) -> int:
+def add_foqa_files(linter: Linter, paths: Sequence[Path], cwd: Path, args: argparse.Namespace) -> int:
     """``--add-foqa``: freeze the remaining diagnostics; report on stderr (ruff)."""
     counts, failures = for_each_file(paths, cwd, partial(add_foqa, linter))
     message = render_added(sum(counts))

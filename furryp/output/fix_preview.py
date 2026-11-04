@@ -19,9 +19,7 @@ from furryp.output.snippet import gutter
 CONTEXT_LINES = 1
 MAX_EQUAL_LINES_SHOWN = 4
 HUNK_SEPARATOR = "-" * 80
-SHOWN_CHARACTERS = str.maketrans(
-    {"\x07": "\u2407", "\x08": "\u2408", "\x1b": "\u241b", "\x7f": "\u2421"}
-)
+SHOWN_CHARACTERS = str.maketrans({"\x07": "\u2407", "\x08": "\u2408", "\x1b": "\u241b", "\x7f": "\u2421"})
 REMOVED = "-"
 ADDED = "+"
 KEPT = "|"
@@ -37,17 +35,13 @@ def _line(label: str, width: int, sign: str, text: str) -> str:
     return f"{label:<{width}} {sign}" + (f" {content}" if content else "")
 
 
-def _new_lines(
-    after: Sequence[str], first: int, last: int, width: int, sign: str
-) -> Iterator[str]:
+def _new_lines(after: Sequence[str], first: int, last: int, width: int, sign: str) -> Iterator[str]:
     """Yield the lines ``first`` to ``last`` of the fixed text, with their numbers."""
     for number in range(first, last):
         yield _line(str(number + 1), width, sign, after[number])
 
 
-def _hunk_lines(
-    hunk: Sequence[Opcode], before: Sequence[str], after: Sequence[str], width: int
-) -> Iterator[str]:
+def _hunk_lines(hunk: Sequence[Opcode], before: Sequence[str], after: Sequence[str], width: int) -> Iterator[str]:
     """Yield the lines of a group of changes: what is removed, then what is added."""
     for tag, first, last, new_first, new_last in hunk:
         if tag == EQUAL:
@@ -74,20 +68,12 @@ def _opcodes(before: Sequence[str], after: Sequence[str]) -> list[Opcode]:
     """Return the changes between two whole texts, the shared ends included."""
     start, end = _common_ends(before, after)
     matcher = difflib.SequenceMatcher(
-        None,
-        before[start : len(before) - end],
-        after[start : len(after) - end],
-        autojunk=False,
+        None, before[start : len(before) - end], after[start : len(after) - end], autojunk=False
     )
     opcodes = [(EQUAL, 0, start, 0, start)] if start else []
-    opcodes += [
-        (tag, a + start, b + start, c + start, d + start)
-        for tag, a, b, c, d in matcher.get_opcodes()
-    ]
+    opcodes += [(tag, a + start, b + start, c + start, d + start) for tag, a, b, c, d in matcher.get_opcodes()]
     if end:
-        opcodes.append(
-            (EQUAL, len(before) - end, len(before), len(after) - end, len(after))
-        )
+        opcodes.append((EQUAL, len(before) - end, len(before), len(after) - end, len(after)))
     return opcodes
 
 
@@ -105,9 +91,7 @@ def _hunks(opcodes: Sequence[Opcode]) -> list[list[Opcode]]:
         elif last - first > MAX_EQUAL_LINES_SHOWN or index in {0, len(opcodes) - 1}:
             if current:
                 keep = min(CONTEXT_LINES, last - first)
-                current.append(
-                    (EQUAL, first, first + keep, new_first, new_first + keep)
-                )
+                current.append((EQUAL, first, first + keep, new_first, new_first + keep))
                 hunks.append(current)
             keep = min(CONTEXT_LINES, last - first)
             current = [(EQUAL, last - keep, last, new_last - keep, new_last)]

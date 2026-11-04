@@ -19,14 +19,7 @@ from furryp.core.positions import TextIndex, first_line_break, split_lines, text
 
 DEFAULT_NEWLINE = "\n"
 NOT_STATEMENT_TOKENS = frozenset(
-    {
-        tokenize.COMMENT,
-        tokenize.NL,
-        tokenize.INDENT,
-        tokenize.DEDENT,
-        tokenize.ENCODING,
-        tokenize.ENDMARKER,
-    }
+    {tokenize.COMMENT, tokenize.NL, tokenize.INDENT, tokenize.DEDENT, tokenize.ENCODING, tokenize.ENDMARKER}
 )
 
 
@@ -138,9 +131,7 @@ def parse_source(path: Path, display: str, text: str, encoding: str) -> SourceFi
     )
 
 
-def _parse(
-    text: str, lines: tuple[str, ...]
-) -> tuple[ast.Module | None, SyntaxProblem | None]:
+def _parse(text: str, lines: tuple[str, ...]) -> tuple[ast.Module | None, SyntaxProblem | None]:
     """Parse ``text`` without emitting ``SyntaxWarning``."""
     try:
         with warnings.catch_warnings():
@@ -152,9 +143,7 @@ def _parse(
         return None, SyntaxProblem(error.msg, Span(start, max(start, end)))
 
 
-def _tokenize(
-    text: str, lines: tuple[str, ...]
-) -> tuple[tuple[tokenize.TokenInfo, ...] | None, SyntaxProblem | None]:
+def _tokenize(text: str, lines: tuple[str, ...]) -> tuple[tuple[tokenize.TokenInfo, ...] | None, SyntaxProblem | None]:
     """Tokenize ``text``; universal newlines split it, nothing is translated."""
     readline = io.StringIO(text, newline="").readline
     try:
@@ -178,9 +167,7 @@ def _clamp(lines: tuple[str, ...], line: int, column: int) -> Position:
     return Position(max(line, 1), max(column, 1))
 
 
-def _logical_ranges(
-    tokens: tuple[tokenize.TokenInfo, ...],
-) -> tuple[tuple[int, int], ...]:
+def _logical_ranges(tokens: tuple[tokenize.TokenInfo, ...]) -> tuple[tuple[int, int], ...]:
     """Return the line range of every logical line, in order."""
     ranges: list[tuple[int, int]] = []
     first: int | None = None

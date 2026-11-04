@@ -31,9 +31,7 @@ def pattern_matches(pattern: str, relative: PurePosixPath) -> bool:
 def path_matches(patterns: Iterable[str], relative: PurePosixPath) -> bool:
     """Whether a pattern matches ``relative`` or one of its parent directories."""
     prefixes = (relative, *relative.parents[:-1])
-    return any(
-        pattern_matches(pattern, prefix) for pattern in patterns for prefix in prefixes
-    )
+    return any(pattern_matches(pattern, prefix) for pattern in patterns for prefix in prefixes)
 
 
 @dataclass(frozen=True, slots=True)
@@ -79,9 +77,7 @@ class DiscoveryResult:
     unreadable: tuple[WalkError, ...] = ()
 
 
-def _walk(
-    top: Path, root: Path, file_filter: FileFilter, errors: list[WalkError]
-) -> Iterator[Path]:
+def _walk(top: Path, root: Path, file_filter: FileFilter, errors: list[WalkError]) -> Iterator[Path]:
     """Yield the accepted files below ``top``, without entering excluded dirs.
 
     A directory that cannot be listed is appended to ``errors`` and skipped.
@@ -91,9 +87,7 @@ def _walk(
     on_error = functools.partial(record_walk_error, errors, top)
     for directory, dirnames, filenames in top.walk(on_error=on_error):
         dirnames[:] = sorted(
-            name
-            for name in dirnames
-            if not file_filter.is_excluded(relative_to_root(directory / name, root))
+            name for name in dirnames if not file_filter.is_excluded(relative_to_root(directory / name, root))
         )
         for name in sorted(filenames):
             path = directory / name
@@ -101,9 +95,7 @@ def _walk(
                 yield path.resolve()
 
 
-def discover_files(
-    paths: Iterable[Path], cwd: Path, root: Path, file_filter: FileFilter
-) -> DiscoveryResult:
+def discover_files(paths: Iterable[Path], cwd: Path, root: Path, file_filter: FileFilter) -> DiscoveryResult:
     """Return the unique files to check under ``paths`` (relative to ``cwd``)."""
     found: dict[Path, None] = {}
     missing: dict[Path, None] = {}

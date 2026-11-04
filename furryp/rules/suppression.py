@@ -67,10 +67,7 @@ UNUSED_FOQA = Rule(
 
 
 def unused_foqa(
-    suppressions: Suppressions,
-    registry: Registry,
-    selected: frozenset[str],
-    source: SourceFile,
+    suppressions: Suppressions, registry: Registry, selected: frozenset[str], source: SourceFile
 ) -> list[Diagnostic]:
     """Return the FUR001 diagnostics of the directives of a file.
 
@@ -110,9 +107,7 @@ def directive_fix(source: SourceFile, directive: Directive, kept: Sequence[str])
 class DirectiveAudit:
     """Audit of the directives of a file, after the ``foqa`` filter."""
 
-    def __init__(
-        self, suppressions: Suppressions, registry: Registry, selected: frozenset[str]
-    ) -> None:
+    def __init__(self, suppressions: Suppressions, registry: Registry, selected: frozenset[str]) -> None:
         """Keep the filter of the file, the registry and the selected codes."""
         self._suppressions = suppressions
         self._registry = registry
@@ -126,22 +121,10 @@ class DirectiveAudit:
             if problem is not None:
                 message, kept = problem
                 fix = directive_fix(source, directive, kept)
-                diagnostics.append(
-                    Diagnostic(
-                        CODE,
-                        NAME,
-                        message,
-                        source.path,
-                        directive.span,
-                        UNUSED_HELP,
-                        fix,
-                    )
-                )
+                diagnostics.append(Diagnostic(CODE, NAME, message, source.path, directive.span, UNUSED_HELP, fix))
         return diagnostics
 
-    def _problem(
-        self, position: int, directive: Directive
-    ) -> tuple[str, list[str]] | None:
+    def _problem(self, position: int, directive: Directive) -> tuple[str, list[str]] | None:
         """Return the message of a directive and its identifiers that served, or ``None`` if it fully serves."""
         if not directive.identifiers:
             if self._suppressions.is_used(position):
@@ -156,9 +139,7 @@ class DirectiveAudit:
         )
         return UNUSED_MESSAGE.format(reasons=reasons), kept
 
-    def _classify(
-        self, position: int, directive: Directive
-    ) -> tuple[dict[Reason, list[str]], list[str]]:
+    def _classify(self, position: int, directive: Directive) -> tuple[dict[Reason, list[str]], list[str]]:
         """Return the reported identifiers of a directive and those that served.
 
         The reported ones are grouped by reason; those that served stay in order.
@@ -178,9 +159,7 @@ class DirectiveAudit:
         ordered = {reason: groups[reason] for reason in Reason if reason in groups}
         return ordered, kept
 
-    def _reason(
-        self, rule: Rule | None, duplicated: bool, position: int, identifier: str
-    ) -> Reason | None:
+    def _reason(self, rule: Rule | None, duplicated: bool, position: int, identifier: str) -> Reason | None:
         """Return why an identifier is reported, or ``None`` if it served or names no rule."""
         if duplicated:
             return Reason.DUPLICATED

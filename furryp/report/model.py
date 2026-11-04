@@ -79,9 +79,7 @@ class ReportModel:
     total_violations: int
 
 
-def _header(
-    configuration: Configuration, active: frozenset[str], timing: Timing
-) -> Header:
+def _header(configuration: Configuration, active: frozenset[str], timing: Timing) -> Header:
     """Return the head of the report."""
     config_file = configuration.config_file
     elapsed = (timing.finished - timing.started).total_seconds()
@@ -97,9 +95,7 @@ def _header(
     )
 
 
-def _summary(
-    files: Sequence[FileSummary], in_error: int, active: frozenset[str]
-) -> Summary:
+def _summary(files: Sequence[FileSummary], in_error: int, active: frozenset[str]) -> Summary:
     """Return the cards of the summary.
 
     The files in error are only counted, and the unused directives are unknown if FUR001 did not run.
@@ -132,10 +128,7 @@ def _analysis_errors(
 ) -> tuple[AnalysisError, ...]:
     """Return every file without measures, sorted by path; the list is complete."""
     errors = [error for file in failed for error in file.errors]
-    errors += [
-        AnalysisError(display_path(failure.path, cwd), None, None, failure.reason)
-        for failure in failures
-    ]
+    errors += [AnalysisError(display_path(failure.path, cwd), None, None, failure.reason) for failure in failures]
     return tuple(sorted(errors, key=_error_order))
 
 

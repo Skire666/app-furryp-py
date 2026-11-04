@@ -22,9 +22,7 @@ from furryp.core.ast_utils import DEFINITION_TYPES, DOT, IMPORT_TYPES, dotted_na
 
 STAR = "*"
 TYPE_CHECKING = "TYPE_CHECKING"
-TYPING_TYPE_CHECKING = frozenset(
-    {"typing.TYPE_CHECKING", "typing_extensions.TYPE_CHECKING"}
-)
+TYPING_TYPE_CHECKING = frozenset({"typing.TYPE_CHECKING", "typing_extensions.TYPE_CHECKING"})
 
 
 def module_imports(tree: ast.Module | None) -> Iterator[ast.Import | ast.ImportFrom]:

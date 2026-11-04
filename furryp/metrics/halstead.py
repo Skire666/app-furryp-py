@@ -13,12 +13,7 @@ from collections.abc import Iterable
 from dataclasses import dataclass
 
 STRING_BOUNDARY_TOKENS = frozenset(
-    {
-        tokenize.FSTRING_START,
-        tokenize.FSTRING_END,
-        tokenize.TSTRING_START,
-        tokenize.TSTRING_END,
-    }
+    {tokenize.FSTRING_START, tokenize.FSTRING_END, tokenize.TSTRING_START, tokenize.TSTRING_END}
 )
 CLOSING_DELIMITERS = frozenset({")", "]", "}"})
 MIN_VOCABULARY = 2
@@ -58,9 +53,7 @@ class Halstead:
         """``(n1 / 2) * (N2 / n2)``, 0 if ``n2 = 0``."""
         if not self.distinct_operands:
             return 0.0
-        return (
-            self.distinct_operators / 2 * self.total_operands / self.distinct_operands
-        )
+        return self.distinct_operators / 2 * self.total_operands / self.distinct_operands
 
     @property
     def effort(self) -> float:

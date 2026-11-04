@@ -108,9 +108,7 @@ def _underline(text: str, span: Span, width: int) -> str:
     return gutter(width) + " " + " " * indent + CARET * length
 
 
-def _single_line(
-    lines: Sequence[str], numbers: Sequence[int], span: Span, width: int
-) -> list[str]:
+def _single_line(lines: Sequence[str], numbers: Sequence[int], span: Span, width: int) -> list[str]:
     """Return the lines of an excerpt whose span holds on one line."""
     rendered: list[str] = []
     for number in numbers:
@@ -143,9 +141,7 @@ def _margin(number: int, span: Span, opens_at_start: bool) -> str:
     return "  "
 
 
-def _several_lines(
-    lines: Sequence[str], numbers: Sequence[int], span: Span, width: int
-) -> list[str]:
+def _several_lines(lines: Sequence[str], numbers: Sequence[int], span: Span, width: int) -> list[str]:
     """Return the lines of an excerpt whose span holds on several lines."""
     first_text = _line_text(lines, span.start.line)
     opens_at_start = not first_text[: span.start.column - 1].strip()

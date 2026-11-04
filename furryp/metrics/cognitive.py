@@ -81,9 +81,7 @@ class ClauseKeywords:
 def clause_keywords(source: SourceFile) -> ClauseKeywords:
     """Return the positions of the clause keywords of a file."""
     positions = tuple(
-        token.start
-        for token in source.tokens or ()
-        if token.type == tokenize.NAME and token.string in CLAUSE_KEYWORDS
+        token.start for token in source.tokens or () if token.type == tokenize.NAME and token.string in CLAUSE_KEYWORDS
     )
     return ClauseKeywords(positions)
 
@@ -110,9 +108,7 @@ class _Tally:
 
 def _own_expressions(node: ast.AST) -> list[ast.AST]:
     """Return the direct children of ``node`` that are expressions."""
-    return [
-        child for child in ast.iter_child_nodes(node) if isinstance(child, ast.expr)
-    ]
+    return [child for child in ast.iter_child_nodes(node) if isinstance(child, ast.expr)]
 
 
 def _continues_sequence(node: ast.BoolOp, parent: ast.AST | None) -> bool:
@@ -120,9 +116,7 @@ def _continues_sequence(node: ast.BoolOp, parent: ast.AST | None) -> bool:
     return isinstance(parent, ast.BoolOp) and type(parent.op) is type(node.op)
 
 
-def _tally_expression(
-    node: ast.AST, level: int, parent: ast.AST | None, tally: _Tally
-) -> None:
+def _tally_expression(node: ast.AST, level: int, parent: ast.AST | None, tally: _Tally) -> None:
     """Record the increment of a single node of an expression."""
     match node:
         case ast.IfExp():
@@ -151,10 +145,7 @@ def _tally_expressions(roots: Sequence[ast.AST], level: int, tally: _Tally) -> N
     while stack:
         node, depth, parent = stack.pop()
         _tally_expression(node, depth, parent, tally)
-        children = [
-            (child, _child_level(node, child, depth), node)
-            for child in ast.iter_child_nodes(node)
-        ]
+        children = [(child, _child_level(node, child, depth), node) for child in ast.iter_child_nodes(node)]
         stack.extend(reversed(children))
 
 
@@ -177,9 +168,7 @@ def _tally_definition(node: Definition, level: int, tally: _Tally) -> list[Neste
     return [(node.body, level + 1)]
 
 
-def _tally_with(
-    node: ast.With | ast.AsyncWith, level: int, tally: _Tally
-) -> list[Nested]:
+def _tally_with(node: ast.With | ast.AsyncWith, level: int, tally: _Tally) -> list[Nested]:
     """Record a ``with``, which does not increase the nesting of its body."""
     tally.add_instruction(WITH, node.lineno)
     for item in node.items:
@@ -239,9 +228,7 @@ class _Walker:
             for statements, inner in nested:
                 self.walk(statements, inner)
 
-    def _tally_statement(
-        self, node: ast.stmt, level: int, tally: _Tally
-    ) -> list[Nested]:
+    def _tally_statement(self, node: ast.stmt, level: int, tally: _Tally) -> list[Nested]:
         """Record the increments of ``node`` and return its nested blocks."""
         match node:
             case ast.If():
@@ -280,9 +267,7 @@ class _Walker:
         _tally_expressions(_own_expressions(node), level, tally)
         return [(node.body, level + 1), *self._tally_else(node.orelse, level, tally)]
 
-    def _tally_try(
-        self, node: ast.Try | ast.TryStar, level: int, tally: _Tally
-    ) -> list[Nested]:
+    def _tally_try(self, node: ast.Try | ast.TryStar, level: int, tally: _Tally) -> list[Nested]:
         """Record a ``try`` and its clauses; only ``except`` and ``else`` nest."""
         tally.add_instruction(TRY, node.lineno)
         nested: list[Nested] = [(node.body, level)]
@@ -296,9 +281,7 @@ class _Walker:
             nested.append((node.finalbody, level))
         return nested
 
-    def _tally_else(
-        self, body: Sequence[ast.stmt], level: int, tally: _Tally
-    ) -> list[Nested]:
+    def _tally_else(self, body: Sequence[ast.stmt], level: int, tally: _Tally) -> list[Nested]:
         """Record the ``else`` clause of an ``if``, a loop or a ``try``, if any."""
         if not body:
             return []

@@ -76,15 +76,7 @@ def render_entry(entry: Entry) -> str:
     if source is not None and diagnostic.fix is not None:
         preview = render_fix(source.text, diagnostic.fix)
     arrow = " " * width + ARROW + location
-    return "\n".join(
-        (
-            render_header(diagnostic),
-            arrow,
-            *excerpt,
-            f"help: {diagnostic.help}",
-            *preview,
-        )
-    )
+    return "\n".join((render_header(diagnostic), arrow, *excerpt, f"help: {diagnostic.help}", *preview))
 
 
 def render_total(remaining: int, fixed: int) -> str:
@@ -95,9 +87,7 @@ def render_total(remaining: int, fixed: int) -> str:
     total = remaining + fixed
     if not fixed:
         return FOUND.format(count=total, plural=plural(total))
-    return FOUND_AFTER_FIX.format(
-        total=total, plural=plural(total), fixed=fixed, remaining=remaining
-    )
+    return FOUND_AFTER_FIX.format(total=total, plural=plural(total), fixed=fixed, remaining=remaining)
 
 
 def render_footer(diagnostics: Sequence[Diagnostic], fixed: int = 0) -> str:

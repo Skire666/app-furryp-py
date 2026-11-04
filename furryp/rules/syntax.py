@@ -16,9 +16,7 @@ SYNTAX_MESSAGE = "SyntaxError: {message}"
 DECODE_MESSAGE = "Failed to decode file: {message}"
 READ_MESSAGE = "Failed to read file: {message}"
 SYNTAX_HELP = "Fix the syntax error; other checks are skipped for this file"
-DECODE_HELP = (
-    "Save the file as UTF-8, or declare its encoding with a `# -*- coding: … -*-` line"
-)
+DECODE_HELP = "Save the file as UTF-8, or declare its encoding with a `# -*- coding: … -*-` line"
 READ_HELP = "Check that the path exists and is readable"
 
 

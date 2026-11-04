@@ -10,18 +10,10 @@ from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import NoReturn
 
-from furryp.config.defaults import (
-    CONFIG_ENCODING,
-    CONFIG_FILE_NAME,
-    PYPROJECT_FILE_NAME,
-)
+from furryp.config.defaults import CONFIG_ENCODING, CONFIG_FILE_NAME, PYPROJECT_FILE_NAME
 from furryp.config.options import Settings
 from furryp.config.schema import SchemaError, child_path, expect_object, parse_dataclass
-from furryp.config.selection import (
-    CliSelection,
-    apply_cli_selection,
-    validate_selectors,
-)
+from furryp.config.selection import CliSelection, apply_cli_selection, validate_selectors
 from furryp.core.errors import ConfigError, UnknownRuleError
 from furryp.core.paths import display_path
 from furryp.core.registry import Registry
@@ -69,20 +61,11 @@ def find_configuration(cwd: Path, explicit: Path | None) -> tuple[Path, Path | N
 
 def default_settings(registry: Registry) -> Settings:
     """Return the default settings, with the default options of every rule."""
-    return Settings(
-        rules={
-            rule.name: rule.options_type()
-            for rule in registry.rules
-            if rule.options_type is not None
-        }
-    )
+    return Settings(rules={rule.name: rule.options_type() for rule in registry.rules if rule.options_type is not None})
 
 
 def load_configuration(
-    cwd: Path,
-    explicit: Path | None,
-    registry: Registry,
-    cli: CliSelection | None = None,
+    cwd: Path, explicit: Path | None, registry: Registry, cli: CliSelection | None = None
 ) -> Configuration:
     """Discover, read and validate the configuration seen from ``cwd``."""
     root, config_file = find_configuration(cwd, explicit)
@@ -134,16 +117,12 @@ def parse_settings(data: object, base: Settings, registry: Registry) -> Settings
     mapping = dict(expect_object(data, ""))
     rules_data = mapping.pop(RULES_KEY, {})
     settings = parse_dataclass(Settings, mapping, "", base)
-    settings = replace(
-        settings, rules=_parse_rules(rules_data, settings.rules, registry)
-    )
+    settings = replace(settings, rules=_parse_rules(rules_data, settings.rules, registry))
     validate_selectors(settings, registry)
     return settings
 
 
-def _parse_rules(
-    data: object, base: dict[str, object], registry: Registry
-) -> dict[str, object]:
+def _parse_rules(data: object, base: dict[str, object], registry: Registry) -> dict[str, object]:
     """Merge the ``rules`` object into ``base``, key by key for each rule."""
     rules = dict(base)
     for name, value in expect_object(data, RULES_KEY).items():

@@ -19,12 +19,7 @@ from pathlib import Path
 from furryp.core.diagnostic import Diagnostic, Edit
 from furryp.core.registry import Registry, Scope
 from furryp.core.source import SourceFile
-from furryp.core.suppression import (
-    Directive,
-    DirectiveKind,
-    find_directives,
-    format_directive,
-)
+from furryp.core.suppression import Directive, DirectiveKind, find_directives, format_directive
 from furryp.fix.engine import apply_edits, write_source
 from furryp.lint.runner import UNSUPPRESSIBLE, Linter
 from furryp.output.terminal import plural
@@ -88,17 +83,13 @@ def insert_edit(source: SourceFile, codes: Iterable[str]) -> Edit:
 
 
 def line_edit(
-    source: SourceFile,
-    directives: Sequence[Directive],
-    lines: tuple[int, int],
-    codes: set[str],
+    source: SourceFile, directives: Sequence[Directive], lines: tuple[int, int], codes: set[str]
 ) -> Edit | None:
     """Return the edit freezing ``codes`` on the logical line ``lines``."""
     present = [
         directive
         for directive in directives
-        if directive.kind is DirectiveKind.LINE
-        and (directive.first_line, directive.last_line) == lines
+        if directive.kind is DirectiveKind.LINE and (directive.first_line, directive.last_line) == lines
     ]
     if any(not directive.identifiers for directive in present):
         return None
@@ -107,9 +98,7 @@ def line_edit(
     return append_edit(source, lines[1], codes)
 
 
-def file_edit(
-    source: SourceFile, directives: Sequence[Directive], codes: set[str]
-) -> Edit | None:
+def file_edit(source: SourceFile, directives: Sequence[Directive], codes: set[str]) -> Edit | None:
     """Return the edit freezing ``codes`` in the single file directive."""
     present = [d for d in directives if d.kind is DirectiveKind.FILE]
     if any(not directive.identifiers for directive in present):
@@ -137,9 +126,7 @@ def _codes_to_freeze(
     return by_line, file_codes
 
 
-def freeze_edits(
-    source: SourceFile, registry: Registry, diagnostics: Iterable[Diagnostic]
-) -> list[Edit]:
+def freeze_edits(source: SourceFile, registry: Registry, diagnostics: Iterable[Diagnostic]) -> list[Edit]:
     """Return one edit per logical line to freeze, plus one for the file."""
     by_line, file_codes = _codes_to_freeze(source, registry, diagnostics)
     directives = find_directives(source, registry)

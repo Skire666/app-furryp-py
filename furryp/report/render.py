@@ -221,12 +221,7 @@ def write_report(path: Path, text: str) -> None:
     """
     try:
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(
-            text,
-            encoding=REPORT_ENCODING,
-            errors=REPORT_ENCODING_ERRORS,
-            newline=REPORT_NEWLINE,
-        )
+        path.write_text(text, encoding=REPORT_ENCODING, errors=REPORT_ENCODING_ERRORS, newline=REPORT_NEWLINE)
     except OSError as error:
         reason = error.strerror or str(error)
         raise ReportWriteError(path, reason) from error

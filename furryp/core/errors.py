@@ -78,7 +78,5 @@ def did_you_mean(word: str, candidates: Iterable[str]) -> str:
     The comparison ignores case: ``fur`` suggests ``FUR``.
     """
     folded = {candidate.casefold(): candidate for candidate in candidates}
-    matches = difflib.get_close_matches(
-        word.casefold(), list(folded), n=1, cutoff=SUGGESTION_CUTOFF
-    )
+    matches = difflib.get_close_matches(word.casefold(), list(folded), n=1, cutoff=SUGGESTION_CUTOFF)
     return format_suggestion(folded[matches[0]]) if matches else ""

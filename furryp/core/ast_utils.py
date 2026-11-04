@@ -64,9 +64,7 @@ def statement_span(source: SourceFile, node: ast.stmt) -> Span:
     text = source.lines[node.lineno - 1]
     start = byte_to_char_column(text, node.col_offset) + 1
     if node.end_lineno == node.lineno and node.end_col_offset is not None:
-        return line_span(
-            node.lineno, start, byte_to_char_column(text, node.end_col_offset) + 1
-        )
+        return line_span(node.lineno, start, byte_to_char_column(text, node.end_col_offset) + 1)
     return line_span(node.lineno, start, len(text) + 1)
 
 
@@ -91,9 +89,7 @@ def node_span(source: SourceFile, node: Located) -> Span:
     """Return the span of a whole statement, expression or imported name, on any lines."""
     start_line, start_column = node_start(source, node)
     end_line, end_column = node_end(source, node)
-    return Span(
-        Position(start_line, start_column + 1), Position(end_line, end_column + 1)
-    )
+    return Span(Position(start_line, start_column + 1), Position(end_line, end_column + 1))
 
 
 def expression_text(source: SourceFile, node: ast.expr) -> str:

@@ -77,9 +77,7 @@ def summarize(report: FileReport, cwd: Path) -> FileSummary | FailedFile:
     """Return what the report keeps of a checked file, measures computed."""
     path = display_path(report.path, cwd)
     errors = tuple(
-        _analysis_error(path, diagnostic)
-        for diagnostic in report.diagnostics
-        if diagnostic.code == INVALID_SYNTAX.code
+        _analysis_error(path, diagnostic) for diagnostic in report.diagnostics if diagnostic.code == INVALID_SYNTAX.code
     )
     metrics = report.metrics
     if errors or metrics is None:

@@ -26,15 +26,12 @@ TOO_COMPLEX_HELP = "Move a group of related methods to a new class"
 MANY_ATTRIBUTES_CODE = "FUR404"
 MANY_ATTRIBUTES_NAME = "too-many-instance-attributes"
 MANY_ATTRIBUTES_MESSAGE = "Class `{name}` has too many attributes ({value} > {max})"
-MANY_ATTRIBUTES_HELP = (
-    "Group the attributes that always go together in a separate object"
-)
+MANY_ATTRIBUTES_HELP = "Group the attributes that always go together in a separate object"
 DEMETER_CODE = "FUR403"
 DEMETER_NAME = "demeter-chain"
 DEMETER_MESSAGE = "Attribute chain `{chain}` is too deep ({depth} > {max})"
 DEMETER_HELP = (
-    "Long chains depend on the inner structure of other objects; "
-    "consider asking the first object for what you need"
+    "Long chains depend on the inner structure of other objects; consider asking the first object for what you need"
 )
 EXPRESSION_MAX_LENGTH = 60
 DEFAULT_IGNORED_ROOTS = ("self", "cls")
@@ -47,9 +44,7 @@ class TooComplexClassOptions:
     max_class_complexity: int = 80
 
 
-def check_too_complex_class(
-    context: RuleContext[TooComplexClassOptions, FileMetrics],
-) -> Iterator[Diagnostic]:
+def check_too_complex_class(context: RuleContext[TooComplexClassOptions, FileMetrics]) -> Iterator[Diagnostic]:
     """Report a class whose complexity is above the maximum."""
     limit = context.options.max_class_complexity
     for item in context.metrics.classes:
@@ -57,9 +52,7 @@ def check_too_complex_class(
             yield Diagnostic(
                 TOO_COMPLEX_CODE,
                 TOO_COMPLEX_NAME,
-                TOO_COMPLEX_MESSAGE.format(
-                    name=item.name, value=item.complexity, max=limit
-                ),
+                TOO_COMPLEX_MESSAGE.format(name=item.name, value=item.complexity, max=limit),
                 context.source.path,
                 item.span,
                 TOO_COMPLEX_HELP,
@@ -95,9 +88,7 @@ def check_too_many_instance_attributes(
             yield Diagnostic(
                 MANY_ATTRIBUTES_CODE,
                 MANY_ATTRIBUTES_NAME,
-                MANY_ATTRIBUTES_MESSAGE.format(
-                    name=item.name, value=item.instance_attributes, max=limit
-                ),
+                MANY_ATTRIBUTES_MESSAGE.format(name=item.name, value=item.instance_attributes, max=limit),
                 context.source.path,
                 item.span,
                 MANY_ATTRIBUTES_HELP,
@@ -184,9 +175,7 @@ def _short_text(source: SourceFile, node: ast.expr) -> str:
     return truncate(expression_text(source, node), EXPRESSION_MAX_LENGTH)
 
 
-def check_demeter_chain(
-    context: RuleContext[DemeterChainOptions],
-) -> Iterator[Diagnostic]:
+def check_demeter_chain(context: RuleContext[DemeterChainOptions]) -> Iterator[Diagnostic]:
     """Report a maximal chain deeper than ``max-depth``."""
     options, source = context.options, context.source
     modules = context.imports.modules if options.ignore_imported_modules else ()

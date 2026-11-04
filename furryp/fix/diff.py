@@ -25,10 +25,7 @@ def _terminated(line: str) -> str:
 def render_file_diff(display: str, before: str, after: str) -> str:
     """Return the unified diff of a file, followed by a blank line."""
     lines = difflib.unified_diff(
-        split_lines_with_breaks(before),
-        split_lines_with_breaks(after),
-        fromfile=display,
-        tofile=display,
+        split_lines_with_breaks(before), split_lines_with_breaks(after), fromfile=display, tofile=display
     )
     return "".join(_terminated(line) for line in lines) + "\n"
 

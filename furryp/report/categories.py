@@ -29,12 +29,7 @@ from furryp.rules.design import (
     TooComplexClassOptions,
     TooManyInstanceAttributesOptions,
 )
-from furryp.rules.metrics import (
-    COGNITIVE_COMPLEXITY,
-    HALSTEAD_FILE,
-    CognitiveComplexityOptions,
-    HalsteadFileOptions,
-)
+from furryp.rules.metrics import COGNITIVE_COMPLEXITY, HALSTEAD_FILE, CognitiveComplexityOptions, HalsteadFileOptions
 from furryp.rules.size import FUNCTION_TOO_LONG, FunctionTooLongOptions
 
 
@@ -136,10 +131,7 @@ def rating_of(share: float, thresholds: Sequence[float]) -> str:
 
 def stats(prefix: str, values: Sequence[float]) -> Row:
     """Return the statistics of ``values``, ``None`` for an empty sequence."""
-    return {
-        f"{prefix}_{name}": function(values) if values else None
-        for name, function in STATISTICS.items()
-    }
+    return {f"{prefix}_{name}": function(values) if values else None for name, function in STATISTICS.items()}
 
 
 def _named(name: str, value: int) -> str:
@@ -198,9 +190,7 @@ def _complexity_row(file: FileSummary) -> Row:
 
 def _complexity(scope: _Scope) -> _Content:
     """Cognitive complexity per function that is not nested (A13)."""
-    options = options_of(
-        scope.rules, COGNITIVE_COMPLEXITY.name, CognitiveComplexityOptions
-    )
+    options = options_of(scope.rules, COGNITIVE_COMPLEXITY.name, CognitiveComplexityOptions)
     values = [item.cognitive for file in scope.files for item in file.outer_functions]
     aggregates = {
         **stats("cognitive", values),
@@ -232,15 +222,10 @@ def _halstead(scope: _Scope) -> _Content:
         **stats("difficulty", [item.difficulty for item in measures]),
         **stats("effort", [item.effort for item in measures]),
         **stats("bugs", [item.bugs for item in measures]),
-        **stats(
-            "function_volume",
-            [item.halstead.volume for file in files for item in file.functions],
-        ),
+        **stats("function_volume", [item.halstead.volume for file in files for item in file.functions]),
         "metric": metric,
     }
-    return _Content(
-        aggregates, lambda file: metric_value(file.halstead, metric), _halstead_row
-    )
+    return _Content(aggregates, lambda file: metric_value(file.halstead, metric), _halstead_row)
 
 
 def _complexities(classes: Sequence[ClassMetrics]) -> list[int]:
@@ -263,9 +248,7 @@ def _design_aggregates(scope: _Scope) -> Row:
     files, rules = scope.files, scope.rules
     classes = [item for file in files for item in file.classes]
     complexities, attributes = _complexities(classes), _attributes(classes)
-    complexity_limit = options_of(
-        rules, TOO_COMPLEX_CLASS.name, TooComplexClassOptions
-    ).max_class_complexity
+    complexity_limit = options_of(rules, TOO_COMPLEX_CLASS.name, TooComplexClassOptions).max_class_complexity
     attributes_limit = options_of(
         rules, TOO_MANY_INSTANCE_ATTRIBUTES.name, TooManyInstanceAttributesOptions
     ).max_instance_attributes
@@ -275,13 +258,9 @@ def _design_aggregates(scope: _Scope) -> Row:
         **stats("attributes", attributes),
         "complexity_limit": complexity_limit,
         "attributes_limit": attributes_limit,
-        "complexity_over": Share(
-            _over(complexities, complexity_limit), len(complexities)
-        ),
+        "complexity_over": Share(_over(complexities, complexity_limit), len(complexities)),
         "attributes_over": Share(_over(attributes, attributes_limit), len(attributes)),
-        "contracts": scope.count_if_run(
-            LAYER_VIOLATION_CODE, _violations_of(files, LAYER_VIOLATION_CODE)
-        ),
+        "contracts": scope.count_if_run(LAYER_VIOLATION_CODE, _violations_of(files, LAYER_VIOLATION_CODE)),
         "chains": scope.count_if_run(DEMETER_CODE, _violations_of(files, DEMETER_CODE)),
     }
 
@@ -296,21 +275,14 @@ def _design(scope: _Scope) -> _Content:
             "violations": file.count_of(codes),
             "max_complexity": max(_complexities(file.classes), default=None),
             "max_attributes": max(_attributes(file.classes), default=None),
-            "contracts": scope.count_if_run(
-                LAYER_VIOLATION_CODE, file.violations[LAYER_VIOLATION_CODE]
-            ),
+            "contracts": scope.count_if_run(LAYER_VIOLATION_CODE, file.violations[LAYER_VIOLATION_CODE]),
             "chains": scope.count_if_run(DEMETER_CODE, file.violations[DEMETER_CODE]),
         }
 
     return _Content(_design_aggregates(scope), lambda file: file.count_of(codes), row)
 
 
-CONTENTS = {
-    "size": _size,
-    "complexity": _complexity,
-    "halstead": _halstead,
-    "design": _design,
-}
+CONTENTS = {"size": _size, "complexity": _complexity, "halstead": _halstead, "design": _design}
 
 
 def _rule_row(files: Sequence[FileSummary], rule: Rule) -> RuleRow:
@@ -326,27 +298,21 @@ def _rule_row(files: Sequence[FileSummary], rule: Rule) -> RuleRow:
     )
 
 
-def _worst_rows(
-    files: Sequence[FileSummary], codes: Sequence[str], content: _Content, limit: int
-) -> tuple[Row, ...]:
+def _worst_rows(files: Sequence[FileSummary], codes: Sequence[str], content: _Content, limit: int) -> tuple[Row, ...]:
     """Return the files in violation: worst score, longest file, then path."""
     flagged = [file for file in files if file.count_of(codes)]
     flagged.sort(key=lambda file: (-content.score(file), -file.lines, file.path))
     return tuple(content.row(file) for file in flagged[:limit])
 
 
-def _not_rated(
-    files: Sequence[FileSummary], rows: Sequence[RuleRow]
-) -> NotRated | None:
+def _not_rated(files: Sequence[FileSummary], rows: Sequence[RuleRow]) -> NotRated | None:
     """Return why a category cannot be rated, if so: no rule ran, or no file."""
     if not rows:
         return NotRated.NO_RULE
     return None if files else NotRated.NO_FILE
 
 
-def _category(
-    key: str, files: Sequence[FileSummary], settings: Settings, registry: Registry
-) -> Category:
+def _category(key: str, files: Sequence[FileSummary], settings: Settings, registry: Registry) -> Category:
     """Return a category, computed on the files that were measured."""
     rules = [rule for rule in registry.rules if rule.category == key]
     codes = [rule.code for rule in rules]
@@ -367,8 +333,6 @@ def _category(
     )
 
 
-def build_categories(
-    files: Sequence[FileSummary], settings: Settings, registry: Registry
-) -> tuple[Category, ...]:
+def build_categories(files: Sequence[FileSummary], settings: Settings, registry: Registry) -> tuple[Category, ...]:
     """Return the four categories, in the order of the report."""
     return tuple(_category(key, files, settings, registry) for key in CONTENTS)
